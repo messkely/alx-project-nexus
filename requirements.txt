@@ -1,0 +1,47 @@
+# Core Django Framework
+Django==4.2.7
+djangorestframework==3.14.0
+
+# Database
+psycopg2-binary==2.9.9
+dj-database-url==2.1.0
+
+# Authentication & Security
+djangorestframework-simplejwt==5.3.0
+django-cors-headers==4.3.1
+
+# API Documentation
+drf-yasg==1.21.7
+
+# Environment Management
+python-decouple==3.8
+python-dotenv==1.0.0
+
+# Background Tasks (Optional but recommended for outstanding projects)
+celery==5.3.4
+redis==5.0.1
+django-celery-beat==2.5.0
+
+# File Upload & Media Handling
+Pillow==10.1.0
+
+# Testing
+pytest==7.4.3
+pytest-django==4.7.0
+factory-boy==3.3.0
+
+# Code Quality & Linting
+flake8==6.1.0
+black==23.11.0
+isort==5.12.0
+
+# Performance & Monitoring
+django-debug-toolbar==4.2.0
+django-extensions==3.2.3
+
+# Production Server
+gunicorn==21.2.0
+whitenoise==6.6.0
+
+# Docker Support (if containerizing)
+docker-compose==1.29.2
