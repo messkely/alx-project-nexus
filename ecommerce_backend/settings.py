@@ -30,7 +30,10 @@ INSTALLED_APPS = [
 
     # my apps
 	'catalog',
-	'users',
+    'users',
+    'orders',
+    'cart',
+    'reviews',
 ]
 
 MIDDLEWARE = [
@@ -66,16 +69,17 @@ WSGI_APPLICATION = 'ecommerce_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'your_db_name',
-#         'USER': 'your_db_user',
-#         'PASSWORD': 'your_db_password',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'ecommerce',
+        'USER': 'ecommerce_user',
+        'PASSWORD': 'ecommerce_pass',
+        'HOST': 'localhost',  # or 'db' if Django is in Docker too
+        'PORT': '5432',
+    }
+}
+
 
 
 
