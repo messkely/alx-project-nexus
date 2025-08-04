@@ -1,0 +1,24 @@
+                       List of relations
+ Schema |            Name             | Type  |     Owner      
+--------+-----------------------------+-------+----------------
+ public | auth_group                  | table | ecommerce_user
+ public | auth_group_permissions      | table | ecommerce_user
+ public | auth_permission             | table | ecommerce_user
+ public | authtoken_token             | table | ecommerce_user
+ public | cart_cart                   | table | ecommerce_user
+ public | cart_cartitem               | table | ecommerce_user
+ public | catalog_category            | table | ecommerce_user
+ public | catalog_product             | table | ecommerce_user
+ public | django_admin_log            | table | ecommerce_user
+ public | django_content_type         | table | ecommerce_user
+ public | django_migrations           | table | ecommerce_user
+ public | django_session              | table | ecommerce_user
+ public | orders_order                | table | ecommerce_user
+ public | orders_orderitem            | table | ecommerce_user
+ public | reviews_review              | table | ecommerce_user
+ public | users_address               | table | ecommerce_user
+ public | users_user                  | table | ecommerce_user
+ public | users_user_groups           | table | ecommerce_user
+ public | users_user_user_permissions | table | ecommerce_user
+(19 rows)
+
