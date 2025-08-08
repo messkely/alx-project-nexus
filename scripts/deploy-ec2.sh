@@ -15,7 +15,8 @@ NC='\033[0m' # No Color
 PROJECT_NAME="alx-ecommerce"
 PROJECT_DIR="/opt/alx-ecommerce"
 NGINX_SITE="alx-ecommerce"
-PYTHON_VERSION="3.11"
+# Auto-detect Python version
+PYTHON_VERSION=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
 DB_NAME="ecommerce_db"
 DB_USER="ecommerce_user"
 
@@ -46,6 +47,21 @@ check_sudo() {
     fi
 }
 
+# Check Python installation
+check_python() {
+    if ! command -v python3 &> /dev/null; then
+        log_error "Python3 is not installed. Please install Python3 first."
+        exit 1
+    fi
+    
+    PYTHON_VERSION=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null || echo "unknown")
+    log_info "Python version detected: ${PYTHON_VERSION}"
+    
+    if ! python3 -m venv --help &> /dev/null; then
+        log_warning "python3-venv might not be installed. Will attempt to install it."
+    fi
+}
+
 # Update system packages
 update_system() {
     log_info "Updating system packages..."
@@ -58,28 +74,65 @@ update_system() {
 install_dependencies() {
     log_info "Installing system dependencies..."
     
-    # Essential packages
+    # Get available Python version
+    PYTHON_CMD=$(which python3)
+    PYTHON_VERSION=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+    log_info "Detected Python version: ${PYTHON_VERSION}"
+    
+    # Update package list
+    sudo apt update
+    
+    # Essential packages (install in groups to handle failures better)
+    log_info "Installing Python and development tools..."
     sudo apt install -y \
-        python3.11 \
-        python3.11-venv \
-        python3.11-dev \
+        python3 \
+        python3-venv \
+        python3-dev \
         python3-pip \
+        build-essential \
+        pkg-config || {
+        log_warning "Some Python packages may not be available. Continuing..."
+    }
+    
+    log_info "Installing database and caching services..."
+    sudo apt install -y \
         postgresql \
         postgresql-contrib \
-        redis-server \
+        redis-server || {
+        log_error "Failed to install database services. Aborting."
+        exit 1
+    }
+    
+    log_info "Installing web server and security tools..."
+    sudo apt install -y \
         nginx \
-        git \
-        curl \
-        wget \
         supervisor \
         ufw \
         fail2ban \
         certbot \
-        python3-certbot-nginx
+        python3-certbot-nginx || {
+        log_error "Failed to install web server components. Aborting."
+        exit 1
+    }
+    
+    log_info "Installing additional tools..."
+    sudo apt install -y \
+        git \
+        curl \
+        wget \
+        htop \
+        unzip || {
+        log_warning "Some additional tools may not be installed. Continuing..."
+    }
     
     # Install Node.js (for any frontend assets)
-    curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-    sudo apt install -y nodejs
+    if ! command -v node &> /dev/null; then
+        log_info "Installing Node.js..."
+        curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - || log_warning "Failed to add Node.js repository"
+        sudo apt install -y nodejs || log_warning "Failed to install Node.js"
+    else
+        log_info "Node.js already installed"
+    fi
     
     log_success "System dependencies installed"
 }
@@ -137,7 +190,7 @@ setup_project() {
     fi
     
     # Create virtual environment
-    python3.11 -m venv venv
+    python3 -m venv venv
     source venv/bin/activate
     
     # Upgrade pip
@@ -411,6 +464,7 @@ deploy_init() {
     log_info "Starting ALX E-Commerce Backend EC2 deployment..."
     
     check_sudo
+    check_python
     update_system
     install_dependencies
     setup_database
