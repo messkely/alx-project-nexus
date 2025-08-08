@@ -131,7 +131,7 @@ RATE_LIMIT_ENABLED=True
 ```python
 # Create secure admin user
 python manage.py createsuperuser
-# Username: Use non-obvious name (e.g., 'sysadmin_2024')
+# Username: Use non-obvious name (e.g., 'sysadmin_2025')
 # Email: Use dedicated admin email
 # Password: Use strong password with special characters
 ```

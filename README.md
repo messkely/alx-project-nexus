@@ -88,13 +88,14 @@ A enterprise-grade, scalable, and secure backend system for an e-commerce platfo
 ```
 alx-project-nexus/
 ├── 🐳 Docker & Deployment
-│   ├── Dockerfile                    # Multi-stage production build
-│   ├── docker-compose.yml           # Base services configuration
-│   ├── docker-compose.dev.yml       # Development overrides
-│   ├── docker-compose.prod.yml      # Production overrides
-│   ├── nginx.conf                   # Nginx reverse proxy config
-│   ├── Makefile                     # Docker management commands
-│   └── docker-setup.sh             # Automated setup script
+│   ├── Dockerfile.prod               # Production multi-stage build
+│   ├── docker-compose.production.yml # Production configuration
+│   ├── nginx/                       # Nginx reverse proxy configs
+│   │   ├── nginx.conf              # Main configuration
+│   │   └── conf.d/                 # Site-specific configs
+│   ├── deploy.sh                   # Automated deployment script
+│   ├── .env.prod.example           # Production environment template
+│   └── ssl/                        # SSL certificates directory
 │
 ├── 🏗️ Django Applications
 │   ├── ecommerce_backend/           # Main Django project
@@ -166,52 +167,58 @@ alx-project-nexus/
 
 ## 🚀 Quick Start
 
-### Option 1: Docker Setup (Recommended)
+### Option 1: Docker Production Setup (Recommended)
 
 #### Prerequisites
-- Docker Engine 20.10+
+- Docker Engine 24.0+
 - Docker Compose V2
+- VPS or cloud server with 2GB+ RAM
 
-#### 1. Clone and Build
+#### 1. Clone and Configure
 ```bash
 git clone https://github.com/messkely/alx-project-nexus.git
 cd alx-project-nexus
 
-# Build and start development environment
-make dev-build
+# Configure production environment
+cp .env.prod.example .env.prod
+# Edit .env.prod with your production settings
 ```
 
-#### 2. Access the Application
+#### 2. Deploy to Production
 ```bash
-# API Base URL
-http://localhost:8000/api/v1/
+# Make deployment script executable
+chmod +x deploy.sh
 
-# API Documentation
-http://localhost:8000/api/v1/docs/
+# Initialize production deployment
+./deploy.sh init
+
+# Set up SSL (optional)
+./deploy.sh ssl yourdomain.com
+```
+
+#### 3. Access the Production Application
+```bash
+# API Base URL (with SSL)
+https://yourdomain.com/api/v1/
+
+# API Documentation  
+https://yourdomain.com/api/v1/docs/
 
 # Admin Panel
-http://localhost:8000/admin/
+https://yourdomain.com/admin/
 ```
 
-#### 3. Create Admin User
+#### 4. Production Management Commands
 ```bash
-make superuser
+./deploy.sh status        # Check service status
+./deploy.sh logs          # View application logs
+./deploy.sh backup        # Create database backup
+./deploy.sh restore       # Restore from backup
+./deploy.sh update        # Update deployment
+./deploy.sh ssl domain.com # Setup/renew SSL
 ```
 
-#### 4. Available Docker Commands
-```bash
-make help              # Show all available commands
-make dev               # Start development environment
-make prod              # Start production environment
-make build             # Build Docker images
-make down              # Stop all services
-make logs              # View application logs
-make shell             # Access Django shell
-make migrate           # Run database migrations
-make test              # Run test suite
-```
-
-### Option 2: Local Development
+### Option 2: Local Development (For Development Only)
 
 #### Prerequisites
 - Python 3.11+
@@ -232,10 +239,10 @@ source venv/bin/activate  # Linux/Mac
 pip install -r requirements.txt
 ```
 
-#### 2. Configure Environment
-Create a `.env` file:
+#### 2. Configure Development Environment
+Create a `.env` file for development:
 ```env
-# Django Settings
+# Django Settings (Development Only)
 DEBUG=True
 SECRET_KEY=your-super-secret-key-change-in-production
 ALLOWED_HOSTS=localhost,127.0.0.1
@@ -252,7 +259,7 @@ DB_PORT=5432
 REDIS_URL=redis://localhost:6379/0
 CACHE_URL=redis://localhost:6379/1
 
-# Security Settings
+# CORS Settings (Development)
 CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
 CSRF_TRUSTED_ORIGINS=http://localhost:8000,http://127.0.0.1:8000
 
@@ -606,153 +613,116 @@ tests/
 
 ### Docker Production Deployment
 
-#### 1. Production Environment Setup
+## 🚀 Production Deployment
+
+### Automated VPS Deployment (Recommended)
+
+#### 1. Server Requirements
+- **OS:** Ubuntu 20.04+ / CentOS 8+ / Debian 11+
+- **RAM:** 2GB minimum (4GB recommended)
+- **Storage:** 20GB SSD minimum
+- **CPU:** 2 cores minimum
+- **Domain:** Registered domain with DNS pointing to server IP
+
+#### 2. Quick Deployment
+```bash
+# On your VPS server
+git clone https://github.com/messkely/alx-project-nexus.git
+cd alx-project-nexus
+
+# Configure production environment
+cp .env.prod.example .env.prod
+# Edit .env.prod with your production values
+
+# Run automated deployment
+chmod +x deploy.sh
+./deploy.sh init
+```
+
+#### 3. SSL Setup (Optional but Recommended)
+```bash
+# Automatic SSL with Let's Encrypt
+./deploy.sh ssl yourdomain.com
+```
+
+### Production Environment Variables (.env.prod)
+```env
+# Production Django Settings
+DEBUG=False
+DJANGO_SECRET_KEY=your-super-secure-production-key-50-plus-characters
+DJANGO_ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com
+
+# Database Configuration (Use managed database in production)
+DB_NAME=ecommerce_prod
+DB_USER=ecommerce_prod_user  
+DB_PASSWORD=super-secure-database-password
+DB_HOST=localhost  # Or managed database host
+DB_PORT=5432
+
+# Redis Configuration (Use managed Redis in production)
+REDIS_URL=redis://localhost:6379/0
+CACHE_URL=redis://localhost:6379/1
+
+# Security Settings (Required for Production)
+SECURE_SSL_REDIRECT=True
+SESSION_COOKIE_SECURE=True
+CSRF_COOKIE_SECURE=True
+
+# Email Configuration (For notifications)
+EMAIL_HOST=smtp.yourdomain.com
+EMAIL_PORT=587
+EMAIL_HOST_USER=noreply@yourdomain.com
+EMAIL_HOST_PASSWORD=your-email-password
+DEFAULT_FROM_EMAIL=noreply@yourdomain.com
+```
+
+### Manual Server Setup (Alternative)
+
+If you prefer manual setup instead of the automated deployment script:
+
+#### 1. Install Dependencies
+```bash
+# Update system
+sudo apt update && sudo apt upgrade -y
+
+# Install Docker
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker $USER
+
+# Install Docker Compose
+sudo apt install docker-compose-plugin
+
+# Reboot or logout/login to apply group changes
+```
+
+#### 2. Application Deployment
 ```bash
 # Clone repository
 git clone https://github.com/messkely/alx-project-nexus.git
 cd alx-project-nexus
 
-# Configure production environment
-cp .env.example .env.prod
-# Edit .env.prod with production values
-
-# Build and start production services
-make prod-build
-```
-
-#### 2. Environment Variables (Production)
-```env
-# Production Django Settings
-DEBUG=False
-SECRET_KEY=your-super-secure-production-key
-ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com
-
-# Database (use managed database service)
-DATABASE_URL=postgresql://user:password@db.yourdomain.com:5432/ecommerce_prod
-
-# Redis (use managed Redis service)
-REDIS_URL=redis://redis.yourdomain.com:6379/0
-
-# Security Settings
-SECURE_SSL_REDIRECT=True
-SESSION_COOKIE_SECURE=True
-CSRF_COOKIE_SECURE=True
-
-# Email Configuration
-EMAIL_HOST=smtp.yourdomain.com
-EMAIL_PORT=587
-EMAIL_HOST_USER=noreply@yourdomain.com
-EMAIL_HOST_PASSWORD=email-password
-DEFAULT_FROM_EMAIL=noreply@yourdomain.com
-```
-
-### Traditional VPS/Server Deployment
-
-#### 1. Server Prerequisites
-```bash
-# Update system
-sudo apt update && sudo apt upgrade -y
-
-# Install dependencies
-sudo apt install -y python3.11 python3.11-venv python3-pip
-sudo apt install -y postgresql postgresql-contrib
-sudo apt install -y redis-server
-sudo apt install -y nginx
-```
-
-#### 2. Application Setup
-```bash
-# Create application user
-sudo useradd -m -s /bin/bash ecommerce
-sudo su - ecommerce
-
-# Clone and setup application
-git clone https://github.com/messkely/alx-project-nexus.git
-cd alx-project-nexus
-python3.11 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-pip install gunicorn
-
 # Configure environment
-cp .env.example .env
-# Edit .env with production values
+cp .env.prod.example .env.prod
+nano .env.prod  # Edit with your settings
 
-# Setup database and static files
-python manage.py migrate
-python manage.py collectstatic --noinput
-python manage.py createsuperuser
+# Deploy application
+docker compose -f docker-compose.production.yml up -d --build
 ```
 
-#### 3. Gunicorn Service
+#### 3. Post-Deployment Tasks
 ```bash
-# Create systemd service file
-sudo nano /etc/systemd/system/ecommerce.service
-```
+# Create database tables
+docker compose -f docker-compose.production.yml exec web python manage.py migrate
 
-```ini
-[Unit]
-Description=E-Commerce Django Application
-After=network.target
+# Collect static files  
+docker compose -f docker-compose.production.yml exec web python manage.py collectstatic --noinput
 
-[Service]
-User=ecommerce
-Group=www-data
-WorkingDirectory=/home/ecommerce/alx-project-nexus
-Environment="PATH=/home/ecommerce/alx-project-nexus/venv/bin"
-ExecStart=/home/ecommerce/alx-project-nexus/venv/bin/gunicorn \
-          --workers 3 \
-          --bind unix:/home/ecommerce/alx-project-nexus/ecommerce.sock \
-          ecommerce_backend.wsgi:application
-ExecReload=/bin/kill -s HUP $MAINPID
-Restart=on-failure
+# Create admin user
+docker compose -f docker-compose.production.yml exec web python manage.py createsuperuser
 
-[Install]
-WantedBy=multi-user.target
-```
-
-#### 4. Nginx Configuration
-```bash
-# Create Nginx site configuration
-sudo nano /etc/nginx/sites-available/ecommerce
-```
-
-```nginx
-server {
-    listen 80;
-    server_name yourdomain.com www.yourdomain.com;
-    
-    location = /favicon.ico { access_log off; log_not_found off; }
-    
-    location /static/ {
-        root /home/ecommerce/alx-project-nexus;
-        expires 30d;
-        add_header Cache-Control "public, immutable";
-    }
-    
-    location /media/ {
-        root /home/ecommerce/alx-project-nexus;
-        expires 30d;
-        add_header Cache-Control "public";
-    }
-    
-    location / {
-        include proxy_params;
-        proxy_pass http://unix:/home/ecommerce/alx-project-nexus/ecommerce.sock;
-    }
-}
-```
-
-#### 5. Enable and Start Services
-```bash
-# Enable and start services
-sudo systemctl daemon-reload
-sudo systemctl start ecommerce
-sudo systemctl enable ecommerce
-
-sudo ln -s /etc/nginx/sites-available/ecommerce /etc/nginx/sites-enabled
-sudo nginx -t
-sudo systemctl restart nginx
+# Seed database (optional)
+docker compose -f docker-compose.production.yml exec web python seed_database.py
 ```
 
 ### Cloud Deployment Options
@@ -955,17 +925,28 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📈 Project Status
 
-### Current Version: 1.0.0
+### Current Version: 1.2.0 (Production Ready)
+**Last Updated:** August 8, 2025
+
 - ✅ **Core Features**: Complete e-commerce functionality
-- ✅ **Security**: Enterprise-grade security implementation
-- ✅ **Testing**: Comprehensive test coverage
-- ✅ **Docker**: Full containerization
-- ✅ **Documentation**: Complete project documentation
-- ✅ **Production Ready**: Suitable for production deployment
+- ✅ **Security**: Enterprise-grade security with CSP, SSL, JWT
+- ✅ **Testing**: Comprehensive test coverage (63+ tests)
+- ✅ **Production Deployment**: Automated Docker deployment with SSL
+- ✅ **Documentation**: Complete project and deployment documentation
+- ✅ **Performance**: Optimized with Redis caching and Nginx
+- ✅ **Monitoring**: Health checks and logging
+- ✅ **Backup**: Automated backup and recovery system
+
+### Recent Updates (August 2025)
+- ✅ **Production Infrastructure**: Complete automated deployment with `deploy.sh`
+- ✅ **SSL Integration**: Let's Encrypt SSL certificate automation
+- ✅ **Security Hardening**: Updated CSP headers, admin permissions
+- ✅ **Docker Optimization**: Multi-stage builds and production containers
+- ✅ **Documentation**: Comprehensive deployment and production guides
 
 ### Future Enhancements
 - [ ] **Payment Integration**: Stripe/PayPal integration
-- [ ] **Email Notifications**: Order confirmation emails
+- [ ] **Email Notifications**: Order confirmation emails  
 - [ ] **Real-time Updates**: WebSocket notifications
 - [ ] **Analytics Dashboard**: Admin analytics interface
 - [ ] **Mobile API**: Mobile-optimized API endpoints

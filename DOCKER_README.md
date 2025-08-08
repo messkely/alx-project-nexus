@@ -1,218 +1,200 @@
-# 🐳 Docker Deployment Guide
+# 🐳 Docker Production Deployment Guide
 
-This guide explains how to deploy the Django E-commerce API using Docker and Docker Compose.
+This guide explains how to deploy the ALX E-Commerce Backend using Docker in production environments.
 
 ## 📋 Prerequisites
 
-- Docker Engine 20.10+
-- Docker Com   ```bash
-   # Change ports in docker-compose.yml
-   ports:
-     - "8001:8000"  # Use different host port
-   ```
-
-2. **Database Connection Issues:**
-   ```bash
-   # Check database status
-   docker compose exec db pg_isready -U ecommerce_user -d ecommerce
-   
-   # View database logs
-   docker compose logs db
-   ```B+ RAM available
-- 10GB+ disk space
+- Docker Engine 24.0+
+- Docker Compose V2
+- 4GB+ RAM available
+- 20GB+ disk space
+- Domain name (for SSL)
+- VPS or cloud server
 
 ## 🚀 Quick Start
 
-### Option 1: Automated Setup (Recommended)
+### Production Deployment (Recommended)
 ```bash
-./docker-setup.sh
+# Clone repository
+git clone https://github.com/messkely/alx-project-nexus.git
+cd alx-project-nexus
+
+# Configure production environment
+cp .env.prod.example .env.prod
+# Edit .env.prod with your settings
+
+# Run automated deployment
+chmod +x deploy.sh
+./deploy.sh init
 ```
 
-### Option 2: Manual Setup
+### Development Setup (Local Only)
+```bash
+# For local development only
+cp .env.example .env
+# Edit .env for development settings
 
-1. **Clone and navigate to the project:**
-   ```bash
-   git clone <repository-url>
-   cd alx-project-nexus
-   ```
+# Use local development server (not containerized)
+python manage.py runserver
+```
 
-2. **Create environment file:**
-   ```bash
-   cp .env.example .env
-   # Edit .env file with your configuration
-   ```
+## 🏗️ Production Architecture
 
-3. **Choose your environment:**
+The Docker production setup includes:
 
-   **Development:**
-   ```bash
-   docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
-   ```
+- **web**: Django application (Gunicorn + Python 3.11)
+- **db**: PostgreSQL 15 database with health checks
+- **redis**: Redis 7 for caching and sessions
+- **nginx**: Nginx reverse proxy with SSL termination
 
-   **Production:**
-   ```bash
-   docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build
-   ```
+## 🔧 Production Configuration
 
-## 🏗️ Architecture
+### Environment Variables (.env.prod)
 
-The Docker setup includes the following services:
+**Critical settings to configure:**
 
-- **web**: Django application (Python 3.11)
-- **db**: PostgreSQL 15 database
-- **redis**: Redis for caching and sessions
-- **nginx**: Reverse proxy (production only)
-
-## 🔧 Configuration
-
-### Environment Variables (.env)
-
-| Variable | Description | Default |
+| Variable | Description | Example |
 |----------|-------------|---------|
 | `DEBUG` | Django debug mode | `False` |
-| `SECRET_KEY` | Django secret key | Required |
-| `DATABASE_URL` | PostgreSQL connection string | Auto-configured |
-| `REDIS_URL` | Redis connection string | Auto-configured |
-| `ALLOWED_HOSTS` | Comma-separated allowed hosts | `localhost,127.0.0.1` |
+| `DJANGO_SECRET_KEY` | Django secret key (50+ chars) | `your-super-secure-key...` |
+| `DJANGO_ALLOWED_HOSTS` | Allowed hostnames | `yourdomain.com,www.yourdomain.com` |
+| `DB_NAME` | Database name | `ecommerce_prod` |
+| `DB_USER` | Database user | `ecommerce_user` |
+| `DB_PASSWORD` | Database password | `secure-db-password` |
+| `REDIS_URL` | Redis connection | `redis://redis:6379/0` |
 
-### Docker Compose Files
+### Docker Compose Configuration
 
-- `docker-compose.yml`: Base configuration
-- `docker-compose.dev.yml`: Development overrides
-- `docker-compose.prod.yml`: Production overrides
+The production setup uses `docker-compose.production.yml` which includes:
+- Multi-stage production Docker builds
+- Network isolation and security
+- Health checks for all services
+- Volume management for persistence
+- SSL certificate handling
+- Automated backups
 
-## 📊 Development Environment
+## 📊 Production Features
 
-The development setup includes:
-- Hot code reloading
-- Debug mode enabled
-- Direct port access (8000)
-- Volume mounting for live editing
-- Django development server
+### Security
+- ✅ Non-root container execution
+- ✅ Network isolation between services
+- ✅ SSL/TLS encryption with Let's Encrypt
+- ✅ Security headers via Nginx
+- ✅ Rate limiting protection
+- ✅ Database connection security
 
-**Access Points:**
-- API: http://localhost:8000/api/v1/
-- Admin: http://localhost:8000/admin/
-- API Docs: http://localhost:8000/api/v1/docs/
+### Performance
+- ✅ Gunicorn multi-worker setup
+- ✅ Redis caching layer
+- ✅ Nginx static file serving
+- ✅ Database connection pooling
+- ✅ Optimized Docker image layers
 
-## 🏭 Production Environment
+### Monitoring
+- ✅ Container health checks
+- ✅ Application logging
+- ✅ Database monitoring
+- ✅ SSL certificate monitoring
 
-The production setup includes:
-- Nginx reverse proxy
-- Static file serving
-- SSL-ready configuration
-- Health checks
-- Automatic restarts
-- Security hardening
+## 🛠️ Deployment Commands
 
-**Access Points:**
-- Application: http://localhost/
-- Admin: http://localhost/admin/
-- API Docs: http://localhost/api/v1/docs/
-
-## 🛠️ Common Commands
-
-### Container Management
+### Initial Setup
 ```bash
-# Start services
-docker compose up -d
+# Initialize production environment
+./deploy.sh init
 
-# Stop services
-docker compose down
-
-# Rebuild and start
-docker compose up --build
-
-# View logs
-docker compose logs -f [service_name]
-
-# Scale web service
-docker compose up -d --scale web=3
+# Setup SSL certificates
+./deploy.sh ssl yourdomain.com
 ```
 
-### Django Management
+### Management
 ```bash
+# Check service status
+./deploy.sh status
+
+# View application logs
+./deploy.sh logs
+
+# Create database backup
+./deploy.sh backup
+
+# Update deployment
+./deploy.sh update
+```
+
+### Manual Operations
+```bash
+# Access Django shell
+docker compose -f docker-compose.production.yml exec web python manage.py shell
+
 # Run migrations
-docker compose exec web python manage.py migrate
+docker compose -f docker-compose.production.yml exec web python manage.py migrate
 
 # Create superuser
-docker compose exec web python manage.py createsuperuser
-
-# Collect static files
-docker compose exec web python manage.py collectstatic --noinput
-
-# Django shell
-docker compose exec web python manage.py shell
-
-# Run tests
-docker compose exec web python manage.py test
-
-# Load seed data
-docker compose exec web python manage.py loaddata fixture.json
+docker compose -f docker-compose.production.yml exec web python manage.py createsuperuser
 ```
 
-### Database Operations
-```bash
-# Database shell
-docker compose exec db psql -U ecommerce_user -d ecommerce
-
-# Backup database
-docker compose exec db pg_dump -U ecommerce_user ecommerce > backup.sql
-
-# Restore database
-docker compose exec -T db psql -U ecommerce_user ecommerce < backup.sql
-
-# View database logs
-docker compose logs db
-```
-
-## 🔒 Security Considerations
-
-### Development
-- Uses insecure secret keys
-- Debug mode enabled
-- Direct port access
-- No SSL/HTTPS
-
-### Production
-- Strong secret keys required
-- Debug mode disabled
-- Access through Nginx only
-- SSL/HTTPS ready
-- Security headers configured
-- Rate limiting enabled
-
-## 🚨 Troubleshooting
+## 🔍 Troubleshooting
 
 ### Common Issues
 
-1. **Port Already in Use:**
+1. **Port Conflicts:**
    ```bash
-   # Check what's using the port
-   sudo netstat -tulpn | grep :8000
-   
-   # Change ports in docker-compose.yml
-   ports:
-     - "8001:8000"  # Use different host port
+   # Check if ports are in use
+   sudo netstat -tulpn | grep :80
+   sudo netstat -tulpn | grep :443
    ```
 
 2. **Database Connection Issues:**
    ```bash
    # Check database status
-   docker-compose exec db pg_isready -U ecommerce_user -d ecommerce
+   docker compose -f docker-compose.production.yml exec db pg_isready -U ecommerce_user -d ecommerce
    
    # View database logs
-   docker-compose logs db
+   docker compose -f docker-compose.production.yml logs db
    ```
 
-3. **Permission Issues:**
+3. **SSL Certificate Issues:**
    ```bash
-   # Fix ownership issues
-   sudo chown -R $USER:$USER .
+   # Check certificate status
+   ./deploy.sh ssl-status yourdomain.com
    
-   # Fix permissions
-   chmod 644 .env
-   chmod +x docker-setup.sh
+   # Renew certificates
+   ./deploy.sh ssl-renew yourdomain.com
+   ```
+
+## 📈 Performance Optimization
+
+### Container Optimization
+```bash
+# Remove unused Docker objects
+docker system prune -f
+
+# Optimize image sizes
+docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}"
+```
+
+## � Backup and Recovery
+
+### Automated Backups
+```bash
+# Manual backup
+./deploy.sh backup
+
+# Schedule automatic backups (add to crontab)
+0 2 * * * /path/to/deploy.sh backup
+```
+
+### Recovery Process
+```bash
+# Restore from backup
+./deploy.sh restore /path/to/backup/file
+```
+
+---
+
+**Built for production deployment with enterprise-grade security and performance.**
+
    ```
 
 4. **Memory Issues:**

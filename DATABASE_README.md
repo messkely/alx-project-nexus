@@ -1,6 +1,7 @@
 # Database Schema and Seeding Documentation
+**Updated:** August 8, 2025
 
-This directory contains comprehensive database schema and data seeding scripts for the Django e-commerce application.
+This directory contains comprehensive database schema and data seeding scripts for the ALX E-Commerce Django application.
 
 ## Files Overview
 
@@ -13,18 +14,17 @@ Complete PostgreSQL database schema that mirrors the Django models. This include
 
 ### 2. `seed_database.py`
 Comprehensive Python script that uses Django ORM to populate the database with realistic sample data:
-- Users (including admin)
-- Addresses
-- Categories and Products
-- Shopping Carts
-- Orders and Order Items
-- Product Reviews
+- Users (including admin user)
+- User addresses with default address support
+- Product categories with slugs
+- Products with pricing, inventory, and categorization
+- Shopping carts and cart items
+- Orders with various statuses and order items
+- Product reviews with 1-5 star ratings
 
-### 3. `scripts/django_seed_script.py`
-Simplified Django shell script for quick data seeding using Django management commands.
-
-### 4. `seed_data.sql`
+### 3. `seed_data.sql`
 Direct SQL script that can be run on PostgreSQL database to insert sample data without Django.
+Useful for Docker initialization and production data seeding.
 
 ## Database Schema Overview
 
@@ -32,30 +32,72 @@ The e-commerce application consists of the following main entities:
 
 ### Users App
 - **users_user**: Custom user model extending Django's AbstractUser
+  - Email-based authentication
+  - Profile information (first_name, last_name, phone)
+  - Role-based permissions (staff, superuser)
 - **users_address**: User shipping addresses with default address support
+  - Multiple addresses per user
+  - Default address selection
+  - Complete address information
 
 ### Catalog App  
-- **catalog_category**: Product categories with slugs
-- **catalog_product**: Products with pricing, inventory, and categorization
+- **catalog_category**: Product categories with hierarchical support
+  - SEO-friendly slugs
+  - Category descriptions
+  - Nested category support
+- **catalog_product**: Products with comprehensive details
+  - Pricing and inventory management
+  - SEO-friendly slugs
+  - Image upload support
+  - Category relationships
+  - Stock quantity tracking
 
 ### Cart App
-- **cart_cart**: Shopping carts for users
+- **cart_cart**: Shopping carts for authenticated users
+  - One cart per user
+  - Automatic cart creation
+  - Total calculation
 - **cart_cartitem**: Items within shopping carts
+  - Product-cart relationships
+  - Quantity management
+  - Subtotal calculations
 
 ### Orders App
 - **orders_order**: Customer orders with status tracking
+  - Order status workflow (pending, processing, shipped, delivered)
+  - Order totals and timestamps
+  - User relationships
 - **orders_orderitem**: Individual items within orders
+  - Product snapshot at order time
+  - Quantity and pricing preservation
+  - Order-product relationships
 
 ### Reviews App
-- **reviews_review**: Product reviews with ratings (1-5 stars)
+- **reviews_review**: Product reviews with ratings
+  - 1-5 star rating system
+  - Review text and timestamps
+  - User-product relationships
+  - One review per user per product
 
-## Usage Instructions
+## Production Usage Instructions
 
-### Option 1: Using Django ORM (Recommended)
+### Option 1: Automated Production Deployment
+```bash
+# Deploy with automated script (includes database setup)
+./deploy.sh init
 
-1. **Ensure Django is properly configured:**
+# The deployment script automatically:
+# - Creates database schema
+# - Runs Django migrations
+# - Seeds with sample data (optional)
+```
+
+### Option 2: Manual Django ORM Setup (Development)
+
+1. **Ensure Django environment is properly configured:**
    ```bash
    cd /home/fedora/Projects/alx-project-nexus
+   source venv/bin/activate  # If using virtual environment
    python manage.py migrate
    ```
 
@@ -64,19 +106,21 @@ The e-commerce application consists of the following main entities:
    python seed_database.py
    ```
 
-### Option 2: Using Django Shell
+### Option 3: Docker Production Environment
 
-1. **Run migrations first:**
+1. **Using production Docker setup:**
    ```bash
-   python manage.py migrate
+   # Start production environment
+   docker compose -f docker-compose.production.yml up -d
+
+   # Run migrations
+   docker compose -f docker-compose.production.yml exec web python manage.py migrate
+
+   # Seed database (optional)
+   docker compose -f docker-compose.production.yml exec web python seed_database.py
    ```
 
-2. **Execute the Django shell script:**
-   ```bash
-   python manage.py shell < scripts/django_seed_script.py
-   ```
-
-### Option 3: Direct SQL Execution
+### Option 4: Direct SQL Execution (Advanced)
 
 1. **Create database schema:**
    ```bash
@@ -88,16 +132,88 @@ The e-commerce application consists of the following main entities:
    psql -h localhost -U ecommerce_user -d ecommerce -f seed_data.sql
    ```
 
-### Option 4: Using Docker Compose
+## Sample Data Contents
 
-If using the provided `docker-compose.yml`:
+### Users
+- **Admin User**: `admin@ecommerce.com` / `adminpass123`
+- **Test Customer**: `john.doe@example.com` / `testpass123`
+- **Staff User**: `staff@ecommerce.com` / `staffpass123`
 
-1. **Start the database:**
-   ```bash
-   docker-compose up -d db
-   ```
+### Categories
+- Electronics (smartphones, laptops, tablets)
+- Clothing (men's, women's, accessories)
+- Home & Garden (furniture, decor, appliances)
+- Books (fiction, non-fiction, educational)
 
-2. **Wait for database to be ready, then run migrations:**
+### Products
+- 20+ sample products across all categories
+- Realistic pricing and descriptions
+- Stock quantities for inventory testing
+- SEO-friendly slugs
+
+### Orders & Reviews
+- Sample orders in various statuses
+- Product reviews with ratings
+- Realistic order data for testing
+
+## Database Performance Considerations
+
+### Indexes
+The schema includes optimized indexes for:
+- User lookups (email, username)
+- Product searches (title, category, price)
+- Order queries (user, date, status)
+- Review lookups (product, user)
+
+### Relationships
+- Foreign key constraints maintain data integrity
+- Optimized JOIN operations for API queries
+- Cascading deletes where appropriate
+
+### Production Optimization
+```sql
+-- Example performance queries
+SELECT schemaname, tablename, attname, n_distinct 
+FROM pg_stats 
+WHERE schemaname='public' 
+ORDER BY n_distinct DESC;
+
+-- Analyze table statistics
+ANALYZE catalog_product;
+ANALYZE orders_order;
+```
+
+## Backup and Recovery
+
+### Automated Backups (Production)
+```bash
+# Create backup using deployment script
+./deploy.sh backup
+
+# Backups are stored in backups/ directory with timestamps
+```
+
+### Manual Backup
+```bash
+# Database dump
+pg_dump -h localhost -U ecommerce_user ecommerce > backup_$(date +%Y%m%d_%H%M%S).sql
+
+# Restore from backup
+psql -h localhost -U ecommerce_user ecommerce < backup_file.sql
+```
+
+### Docker Backup
+```bash
+# Backup from Docker container
+docker compose -f docker-compose.production.yml exec db pg_dump -U ecommerce_user ecommerce > backup.sql
+
+# Restore to Docker container
+docker compose -f docker-compose.production.yml exec -T db psql -U ecommerce_user ecommerce < backup.sql
+```
+
+---
+
+**Database schema is production-ready and optimized for high-performance e-commerce operations.**
    ```bash
    python manage.py migrate
    ```

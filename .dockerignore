@@ -33,6 +33,95 @@ ENV/
 *.swo
 *~
 
+# Documentation and markdown files
+*.md
+1.md
+ADMIN_ROOT_SECURITY_FIX.md
+ADMIN_SECURITY_FIX.md
+DATABASE_DIAGRAM.md
+DATABASE_README.md
+DATABASE_SCHEMA_UPDATE.md
+DOCKER_README.md
+DOCS_ENDPOINTS_STATUS.md
+GOOGLE_DOC_CONTENT.md
+GOOGLE_DOC_TEMPLATE.md
+REDOC_CSP_FIX.md
+SECURITY_AUDIT_REPORT.md
+SEED_DATABASE_UPDATE.md
+TESTING_README.md
+UNIT_TEST_SUMMARY.md
+api_testing_with_postman.md
+
+# Development tools and scripts
+check_orders.py
+run_tests.py
+security_audit.py
+security_audit_report.json
+test_admin_security.sh
+docker-setup.sh
+
+# Development compose files
+docker-compose.yml
+docker-compose.dev.yml
+
+# Test files
+tests/
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Development environment files
+.env
+.env.local
+.env.dev
+
+# Logs
+logs/
+
+# Assets and static files (these will be generated)
+staticfiles/
+
+# Media uploads (in development)
+media/
+
+# Backup files
+backups/
+*.bak
+
+# SSL certificates
+ssl/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Database files
+*.sqlite3
+*.db
+
+# Node modules (if any)
+node_modules/
+
+# Assets source
+assets/
+
+# Login data
+login_data.json
+
+# Makefile
+Makefile
+.idea/
+*.swp
+*.swo
+*~
+
 # OS
 .DS_Store
 .DS_Store?
