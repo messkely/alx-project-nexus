@@ -49,11 +49,11 @@ INSTALLED_APPS = [
 	
     # third-party apps
     'rest_framework_simplejwt.token_blacklist',
-	'rest_framework',
+    'rest_framework',
     'rest_framework.authtoken',
     'djoser',
     'drf_yasg', # swagger package
-	'django_filters',
+    'django_filters',  # Fixed: should be django_filters not django_filters
 
     # my apps
 	'catalog',

@@ -196,8 +196,16 @@ setup_project() {
     # Upgrade pip
     pip install --upgrade pip
     
-    # Install Python dependencies
-    pip install -r requirements.txt
+    # Install Python dependencies with retry
+    log_info "Installing Python dependencies..."
+    if ! pip install -r requirements.txt; then
+        log_warning "First attempt failed. Retrying with individual installations..."
+        # Try installing in groups if bulk install fails
+        pip install Django==5.2.5 || log_error "Failed to install Django"
+        pip install djangorestframework==3.16.0 || log_error "Failed to install DRF"
+        pip install djoser==2.2.3 || log_error "Failed to install djoser"
+        pip install -r requirements.txt || log_error "Failed to install remaining dependencies"
+    fi
     
     log_success "Project environment setup complete"
 }
