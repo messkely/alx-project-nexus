@@ -3,6 +3,9 @@ from django.urls import path, include
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from django.conf import settings
+from django.conf.urls.static import static
+from django.http import JsonResponse
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -17,14 +20,34 @@ schema_view = get_schema_view(
    permission_classes=(permissions.AllowAny,),
 )
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/auth/', include('users.urls')),  # your JWT auth endpoints
+def health_check(request):
+    """Simple health check endpoint for Docker"""
+    return JsonResponse({'status': 'healthy', 'service': 'ecommerce-api'})
 
-    # Swagger URLs
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-	
-   path('api/', include('catalog.urls')),
+urlpatterns = [
+   path('admin/', admin.site.urls),
+   
+   # Health check endpoint
+   path('api/v1/health/', health_check, name='health-check'),
+    
+   # Authentication & User Management URLs
+   path('api/v1/auth/', include('users.urls')),
+   path('api/v1/users/', include('users.urls')),  # For user profile management
+    
+   # Core E-commerce APIs
+   path('api/v1/', include('catalog.urls')),  # This includes both products/ and categories/ paths
+   path('api/v1/cart/', include('cart.urls')),
+   path('api/v1/orders/', include('orders.urls')),
+   path('api/v1/reviews/', include('reviews.urls')),
+
+   # API Documentation URLs
+   path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+   path('api/v1/docs/', schema_view.with_ui('swagger', cache_timeout=0), name='api-docs'),
+   path('api/v1/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+   path('api/v1/schema/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
 
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

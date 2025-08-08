@@ -1,0 +1,44 @@
+[
+  {
+    "severity": "CRITICAL",
+    "category": "Django Configuration",
+    "message": "DEBUG=True in production environment",
+    "recommendation": "Set DEBUG=False in production"
+  },
+  {
+    "severity": "HIGH",
+    "category": "Django Configuration",
+    "message": "Using default Django SECRET_KEY",
+    "recommendation": "Generate a unique SECRET_KEY for production"
+  },
+  {
+    "severity": "MEDIUM",
+    "category": "File Permissions",
+    "message": "ecommerce_backend/settings.py is world-readable",
+    "recommendation": "Remove world-read permissions: chmod o-r ecommerce_backend/settings.py"
+  },
+  {
+    "severity": "MEDIUM",
+    "category": "File Permissions",
+    "message": "manage.py is world-readable",
+    "recommendation": "Remove world-read permissions: chmod o-r manage.py"
+  },
+  {
+    "severity": "MEDIUM",
+    "category": "File Permissions",
+    "message": "requirements.txt is world-readable",
+    "recommendation": "Remove world-read permissions: chmod o-r requirements.txt"
+  },
+  {
+    "severity": "HIGH",
+    "category": "Dependency Security",
+    "message": "Potentially vulnerable dependency found: django==.*[12]\\.",
+    "recommendation": "Update to the latest stable version"
+  },
+  {
+    "severity": "HIGH",
+    "category": "Dependency Security",
+    "message": "Potentially vulnerable dependency found: pillow==.*[1-7]\\.",
+    "recommendation": "Update to the latest stable version"
+  }
+]

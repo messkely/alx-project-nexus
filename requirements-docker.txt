@@ -1,0 +1,40 @@
+# Django E-commerce Backend Requirements
+# Core Django
+Django==5.2.1
+djangorestframework==3.16.0
+djangorestframework_simplejwt==5.5.0
+djoser==2.3.3
+drf-yasg==1.21.7
+django-filter==25.1
+
+# Database
+psycopg2-binary==2.9.10
+dj-database-url==3.0.1
+
+# Security & Authentication
+PyJWT==2.9.0
+social-auth-app-django==5.5.1
+social-auth-core==4.7.0
+oauthlib==3.3.1
+python3-openid==3.2.0
+cryptography==44.0.0
+
+# Configuration & Environment
+python-decouple==3.8
+python-dateutil==2.8.2
+
+# Static Files & Media
+whitenoise==6.9.0
+Pillow==11.1.0
+
+# Web Server
+gunicorn==23.0.0
+
+# Caching (optional - Redis)
+redis==6.2.0
+django-redis==6.0.0
+
+# Utilities
+pytz==2025.2
+requests==2.32.4
+urllib3==2.3.0

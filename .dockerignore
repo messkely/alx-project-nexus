@@ -1,0 +1,92 @@
+# Version control
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.pytest_cache/
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Development files
+*.md
+docs/
+tests/
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Database
+*.sqlite3
+*.db
+
+# Logs
+logs/
+*.log
+
+# Node modules (if any)
+node_modules/
+npm-debug.log*
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Static files (will be collected in container)
+staticfiles/
+
+# Media files in development
+media/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Documentation and README files
+README*
+CHANGELOG*
+LICENSE*
+*.md
+
+# Test files
+test_*.py
+*_test.py
+run_tests.py
