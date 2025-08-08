@@ -6,6 +6,7 @@ from drf_yasg import openapi
 from django.conf import settings
 from django.conf.urls.static import static
 from django.http import JsonResponse
+from .health_views import health_check as aws_health_check, readiness_check, liveness_check
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -27,8 +28,11 @@ def health_check(request):
 urlpatterns = [
    path('admin/', admin.site.urls),
    
-   # Health check endpoint
-   path('api/v1/health/', health_check, name='health-check'),
+   # Health check endpoints for AWS/Docker
+   path('health/', aws_health_check, name='aws-health-check'),
+   path('health/readiness/', readiness_check, name='readiness-check'),
+   path('health/liveness/', liveness_check, name='liveness-check'),
+   path('api/v1/health/', health_check, name='health-check'),  # Legacy health check
     
    # Authentication & User Management URLs
    path('api/v1/auth/', include('users.urls')),

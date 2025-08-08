@@ -1,0 +1,165 @@
+# ALX E-Commerce Backend - AWS Serverless Makefile
+# Updated: August 8, 2025
+
+.PHONY: help aws-deploy aws-info aws-destroy local-dev local-test local-migrate local-seed check-env setup-dev
+
+# Default target
+help:
+	@echo "� ALX E-Commerce Backend - AWS Serverless & Local Development"
+	@echo "=============================================================="
+	@echo ""
+	@echo "☁️ AWS Serverless Deployment:"
+	@echo "  make aws-deploy   - Deploy to AWS serverless (full setup)"
+	@echo "  make aws-info     - Get AWS deployment information"
+	@echo "  make aws-destroy  - Remove all AWS resources"
+	@echo ""
+	@echo "� Local Development:"
+	@echo "  make local-dev    - Setup and run local development"
+	@echo "  make local-test   - Run test suite"
+	@echo "  make local-migrate- Run database migrations"
+	@echo "  make local-seed   - Create local admin user"
+	@echo "  make setup-dev    - Install development dependencies"
+	@echo ""
+	@echo "� Utilities:"
+	@echo "  make check-env    - Verify environment configuration"
+	@echo ""
+	@echo "📚 Documentation:"
+	@echo "  AWS Guide: docs/AWS_DEPLOYMENT.md"
+	@echo "  Local Setup: docs/LOCAL_DEVELOPMENT_STATUS.md"
+
+# AWS Serverless Commands
+aws-deploy:
+	@echo "☁️ Deploying to AWS serverless..."
+	@./scripts/deploy-aws.sh init
+
+aws-info:
+	@echo "📊 Getting AWS deployment information..."
+	@./scripts/deploy-aws.sh info
+
+aws-destroy:
+	@echo "⚠️ Destroying AWS resources..."
+	@./scripts/deploy-aws.sh destroy
+
+# Local Development Commands
+local-dev: setup-dev local-migrate
+	@echo "🚀 Starting local development server..."
+	@echo "📚 API Documentation: http://127.0.0.1:8000/"
+	@echo "🔧 Admin Panel: http://127.0.0.1:8000/admin/ (admin/admin123)"
+	@echo "❤️ Health Check: http://127.0.0.1:8000/health/"
+	@echo ""
+	python manage.py runserver
+
+setup-dev:
+	@echo "📦 Installing development dependencies..."
+	pip install -r requirements.txt
+	@echo "✅ Dependencies installed"
+
+local-migrate:
+	@echo "�️ Running local database migrations..."
+	python manage.py migrate
+	@echo "✅ Migrations completed"
+
+local-seed:
+	@echo "🌱 Creating local admin user..."
+	@python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@example.com', 'admin123') if not User.objects.filter(username='admin').exists() else print('✅ Admin user already exists (admin/admin123)')"
+	@echo "✅ Local admin user ready"
+
+local-test:
+	@echo "🧪 Running test suite..."
+	python manage.py test
+
+# Environment and Setup
+check-env:
+	@echo "🔍 Checking environment configuration..."
+	@test -f .env || (echo "❌ .env not found for local development" && exit 1)
+	@test -f .env.aws.example || (echo "❌ .env.aws.example not found" && exit 1)
+	@echo "✅ Environment files found"
+	@echo ""
+	@echo "📋 Environment Status:"
+	@echo "  Local Development: .env ✅"
+	@echo "  AWS Template: .env.aws.example ✅"
+	@echo "  AWS Config: .env.aws $(if [ -f .env.aws ]; then echo '✅'; else echo '❌ (run ./scripts/deploy-aws.sh init first)'; fi)"
+# Production Commands
+production:
+	@echo "🚀 Starting production environment..."
+	@make check-env
+	@make check-docker
+	@echo "🏗️ Building and starting containers..."
+	docker compose -f docker-compose.production.yml up -d --build
+	@echo "⏳ Waiting for services to be ready..."
+	@sleep 15
+	@make status
+	@echo "✅ Production environment started!"
+	@echo "🌐 Application available at: http://localhost"
+
+logs:
+	@echo "📋 Viewing application logs..."
+	docker compose -f docker-compose.production.yml logs -f
+
+status:
+	@echo "📊 Checking service status..."
+	docker compose -f docker-compose.production.yml ps
+	@echo ""
+	@echo "🔍 Health checks:"
+	@docker compose -f docker-compose.production.yml exec -T web python manage.py check --deploy || echo "⚠️ Django health check failed"
+	@curl -s http://localhost/health/ > /dev/null 2>&1 && echo "✅ API health check passed" || echo "⚠️ API health check failed"
+
+backup:
+	@echo "💾 Creating database backup..."
+	@mkdir -p backups
+	@docker compose -f docker-compose.production.yml exec -T db pg_dump -U $${DB_USER:-ecommerce_user} $${DB_NAME:-ecommerce} > backups/backup_$(shell date +%Y%m%d_%H%M%S).sql
+	@echo "✅ Backup created in backups/ directory"
+
+restore:
+	@echo "🔄 Restoring from backup..."
+	@test -n "$(BACKUP_FILE)" || (echo "❌ Please specify BACKUP_FILE=path/to/backup" && exit 1)
+	@test -f "$(BACKUP_FILE)" || (echo "❌ Backup file not found: $(BACKUP_FILE)" && exit 1)
+	docker compose -f docker-compose.production.yml exec -T db psql -U $${DB_USER:-ecommerce_user} -d $${DB_NAME:-ecommerce} < "$(BACKUP_FILE)"
+	@echo "✅ Database restored successfully"
+
+clean:
+	@echo "🧹 Cleaning up Docker resources..."
+	docker compose -f docker-compose.production.yml down -v
+	docker system prune -f
+	docker volume prune -f
+	@echo "✅ Cleanup completed"
+
+# Development Helpers (for local development only)
+dev-install:
+	@echo "📦 Installing development dependencies..."
+	pip install -r requirements.txt
+
+dev-migrate:
+	@echo "🗃️ Running migrations..."
+	python manage.py migrate
+
+dev-seed:
+	@echo "🌱 Seeding database..."
+	python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@example.com', 'admin123') if not User.objects.filter(username='admin').exists() else print('Admin user already exists')"
+	@echo "👤 Admin user created: admin/admin123"
+
+dev-test:
+	@echo "🧪 Running tests..."
+	python manage.py test
+
+# Advanced commands
+migrate-prod:
+	@echo "🗃️ Running production migrations..."
+	docker compose -f docker-compose.production.yml exec web python manage.py migrate
+	@echo "✅ Production migrations completed"
+
+seed-prod:
+	@echo "🌱 Seeding production database..."
+	docker compose -f docker-compose.production.yml exec web python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@example.com', 'admin123') if not User.objects.filter(username='admin').exists() else print('Admin user already exists')"
+	@echo "👤 Production admin user created"
+
+shell-prod:
+	@echo "🐚 Opening production Django shell..."
+	docker compose -f docker-compose.production.yml exec web python manage.py shell
+
+collectstatic-prod:
+	@echo "📁 Collecting static files..."
+	docker compose -f docker-compose.production.yml exec web python manage.py collectstatic --noinput
+	@echo "✅ Static files collected"
+
+

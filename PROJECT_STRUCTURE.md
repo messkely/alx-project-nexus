@@ -45,6 +45,25 @@ alx-project-nexus/
 │   ├── views.py                   # Review operations
 │   └── urls.py                    # Review endpoints
 │
+├── 📁 scripts/                     # Automation and seeding scripts
+│   ├── deploy.sh                   # Production deployment automation
+│   ├── seed_database.py            # Comprehensive seeding script
+│   └── django_seed_script.py       # Django shell seeding script
+│
+├── 📁 docs/                       # Documentation directory
+│   ├── README.md                  # Documentation index
+│   ├── DATABASE_README.md         # Database guide
+│   ├── DOCKER_README.md           # Docker guide
+│   ├── PRODUCTION_DEPLOYMENT.md   # Deployment guide
+│   ├── TESTING_README.md          # Testing guide
+│   ├── SECURITY_AUDIT_REPORT.md   # Security report
+│   └── api_testing_with_postman.md # API testing
+│
+├── 📁 slides/                     # Presentation materials
+│   ├── Project_Nexus_Final_Presentation_Outline.md
+│   ├── Project_Nexus_Google_Slides_Content.md
+│   └── Project_Nexus_Speaker_Notes.md
+│
 ├── 📁 nginx/                      # Nginx configuration
 │   ├── nginx.conf                 # Main nginx config
 │   └── conf.d/
@@ -60,17 +79,16 @@ alx-project-nexus/
 ├── 📄 manage.py                   # Django management
 ├── 📄 Dockerfile.prod             # Production Dockerfile
 ├── 📄 docker-compose.production.yml # Production compose
-├── 📄 deploy.sh                   # Deployment script
 ├── 📄 requirements-docker.txt     # Python dependencies
 ├── 📄 database_schema.sql         # Database schema
+├── 📄 drawSQL-image-export-2025-08-08.png # Database diagram
 ├── 📄 seed_data.sql               # Sample data
-├── 📄 seed_database.py            # Database seeding script
 ├── 📄 .env.prod.example           # Environment template
 ├── 📄 .dockerignore               # Docker ignore rules
 ├── 📄 .gitignore                  # Git ignore rules
 ├── 📄 README.md                   # Project documentation
-├── 📄 PRODUCTION_DEPLOYMENT.md    # Deployment guide
-└── 📄 nginx.conf                  # Legacy nginx config
+├── 📄 PROJECT_STRUCTURE.md        # This file
+├── 📄 PROJECT_NEXUS_DELIVERABLES.md # Deliverables checklist
 ```
 
 ## 📋 Production-Ready Files

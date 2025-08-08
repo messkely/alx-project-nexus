@@ -24,12 +24,12 @@ class ProductModelTest(TestCase):
             title="Wireless Mouse",
             description="A smooth wireless mouse",
             price=49.99,
-            inventory=20,
+            stock_quantity=20,
             category=self.category
         )
         self.assertEqual(product.slug, slugify("Wireless Mouse"))
         self.assertEqual(product.price, 49.99)
-        self.assertEqual(product.inventory, 20)
+        self.assertEqual(product.stock_quantity, 20)
         self.assertEqual(product.category, self.category)
 
     def test_product_str_method(self):
@@ -37,7 +37,7 @@ class ProductModelTest(TestCase):
             title="Mechanical Keyboard",
             description="A clicky mechanical keyboard",
             price=89.99,
-            inventory=15,
+            stock_quantity=15,
             category=self.category
         )
         self.assertEqual(str(product), "Mechanical Keyboard")

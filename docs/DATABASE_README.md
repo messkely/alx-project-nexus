@@ -28,6 +28,37 @@ Useful for Docker initialization and production data seeding.
 
 ## Database Schema Overview
 
+![Database Schema](../drawSQL-image-export-2025-08-08.png)
+
+### Visual Database Structure
+
+The diagram above shows the core database relationships for our e-commerce platform. Here's what each table represents:
+
+**Core Entities:**
+- **users**: Authentication and user management (extends Django's AbstractUser)
+- **categories**: Product categorization with hierarchical support
+- **products**: Complete product catalog with pricing, inventory, and media
+- **orders**: Order processing with status tracking and total calculations
+- **order_items**: Individual line items within orders with pricing details
+- **cart_items**: Shopping cart functionality for logged-in users
+- **shipping_address**: Customer shipping information and address book
+
+**Key Relationships:**
+- Users can have multiple addresses, orders, and cart items
+- Products belong to categories and can appear in multiple orders/carts
+- Orders contain multiple order items, each referencing a specific product
+- Reviews link users to products (extended feature in our implementation)
+
+### Enhanced Features (Beyond Basic Diagram)
+
+Our actual implementation includes additional features not shown in the basic diagram:
+
+- **Enhanced Address Management**: Support for multiple addresses per user with default selection
+- **Product Reviews System**: Complete review and rating functionality
+- **Advanced Indexing**: Performance-optimized database indexes
+- **Cart Management**: Proper cart container structure (cart table + cart_items)
+- **Status Tracking**: Comprehensive order and payment status management
+
 The e-commerce application consists of the following main entities:
 
 ### Users App
@@ -84,7 +115,7 @@ The e-commerce application consists of the following main entities:
 ### Option 1: Automated Production Deployment
 ```bash
 # Deploy with automated script (includes database setup)
-./deploy.sh init
+./scripts/deploy.sh init
 
 # The deployment script automatically:
 # - Creates database schema
@@ -103,7 +134,14 @@ The e-commerce application consists of the following main entities:
 
 2. **Run the comprehensive seeding script:**
    ```bash
-   python seed_database.py
+   python scripts/seed_database.py
+   ```
+
+### Option 3: Using Django Shell Script
+
+For quick setup using the Django shell script:
+   ```bash
+   python manage.py shell < scripts/django_seed_script.py
    ```
 
 ### Option 3: Docker Production Environment
@@ -117,7 +155,7 @@ The e-commerce application consists of the following main entities:
    docker compose -f docker-compose.production.yml exec web python manage.py migrate
 
    # Seed database (optional)
-   docker compose -f docker-compose.production.yml exec web python seed_database.py
+   docker compose -f docker-compose.production.yml exec web python scripts/seed_database.py
    ```
 
 ### Option 4: Direct SQL Execution (Advanced)
@@ -188,7 +226,7 @@ ANALYZE orders_order;
 ### Automated Backups (Production)
 ```bash
 # Create backup using deployment script
-./deploy.sh backup
+./scripts/deploy.sh backup
 
 # Backups are stored in backups/ directory with timestamps
 ```

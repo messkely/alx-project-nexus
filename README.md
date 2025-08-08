@@ -1,6 +1,6 @@
-# 🛒 ALX E-Commerce Backend - Production Ready
+# 🛒 ALX E-Commerce Backend - AWS EC2
 
-A enterprise-grade, scalable, and secure backend system for an e-commerce platform. This project demonstrates real-world backend architecture with comprehensive security, testing, containerization, and deployment capabilities.
+A enterprise-grade, scalable, and secure backend system for an e-commerce platform. This project demonstrates real-world backend architecture with comprehensive security, testing, and AWS EC2 deployment capabilities.
 
 ---
 
@@ -18,7 +18,7 @@ A enterprise-grade, scalable, and secure backend system for an e-commerce platfo
 - ✅ **Category Management** - Hierarchical product categorization
 - ✅ **Advanced Filtering** - Filter by category, price range, availability
 - ✅ **Search & Sorting** - Full-text search with multiple sorting options
-- ✅ **Image Upload** - Product image handling with media management
+- ✅ **Image Upload** - Product image handling with S3 storage
 - ✅ **Inventory Tracking** - Stock quantity management
 
 ### 🛒 **E-Commerce Features**
@@ -32,7 +32,7 @@ A enterprise-grade, scalable, and secure backend system for an e-commerce platfo
 - ✅ **RESTful API Design** - Clean, consistent API endpoints
 - ✅ **Pagination** - Efficient large dataset handling
 - ✅ **Database Optimization** - Indexed queries and efficient relations
-- ✅ **Caching** - Redis caching for improved performance
+- ✅ **Caching** - ElastiCache Redis for improved performance
 - ✅ **API Documentation** - Interactive Swagger/OpenAPI docs
 
 ### 🧪 **Testing & Quality**
@@ -41,12 +41,15 @@ A enterprise-grade, scalable, and secure backend system for an e-commerce platfo
 - ✅ **Security Testing** - Vulnerability and permission testing
 - ✅ **Test Coverage** - High test coverage for critical functionality
 
-### 🐳 **DevOps & Deployment**
-- ✅ **Docker Containerization** - Complete Docker setup with multi-stage builds
-- ✅ **Docker Compose** - Development and production environments
-- ✅ **Database Migration** - Automated database setup
-- ✅ **Static File Serving** - Production-ready static file handling
-- ✅ **Environment Configuration** - Flexible environment-based settings
+### ☁️ **AWS EC2 Ubuntu Deployment**
+- ✅ **EC2 Instance** - Ubuntu server with automated deployment
+- ✅ **Nginx** - Reverse proxy with SSL support
+- ✅ **Gunicorn** - WSGI server for Django application
+- ✅ **PostgreSQL** - Production database setup
+- ✅ **Redis** - Caching and session storage
+- ✅ **Supervisor** - Process management and monitoring
+- ✅ **Let's Encrypt SSL** - Automated SSL certificate setup
+- ✅ **UFW Firewall** - Security configuration
 
 ---
 
@@ -70,10 +73,11 @@ A enterprise-grade, scalable, and secure backend system for an e-commerce platfo
 ### DevOps & Deployment
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| **Docker** | Latest | Containerization |
-| **Docker Compose** | V2 | Multi-container orchestration |
-| **Gunicorn** | 23.0.0 | WSGI server |
-| **Nginx** | Latest | Reverse proxy |
+| **AWS EC2** | Ubuntu 20.04+ | Virtual private server |
+| **Nginx** | Latest | Reverse proxy and web server |
+| **Gunicorn** | 23.0.0 | WSGI HTTP Server |
+| **Supervisor** | Latest | Process control system |
+| **Let's Encrypt** | Latest | SSL certificate automation |
 
 ### Documentation & Testing
 | Technology | Version | Purpose |
@@ -87,20 +91,15 @@ A enterprise-grade, scalable, and secure backend system for an e-commerce platfo
 
 ```
 alx-project-nexus/
-├── 🐳 Docker & Deployment
-│   ├── Dockerfile.prod               # Production multi-stage build
-│   ├── docker-compose.production.yml # Production configuration
-│   ├── nginx/                       # Nginx reverse proxy configs
-│   │   ├── nginx.conf              # Main configuration
-│   │   └── conf.d/                 # Site-specific configs
-│   ├── deploy.sh                   # Automated deployment script
-│   ├── .env.prod.example           # Production environment template
-│   └── ssl/                        # SSL certificates directory
+├── ☁️ AWS EC2 Deployment
+│   ├── scripts/deploy-ec2.sh       # Automated EC2 Ubuntu deployment
+│   └── .env.example                # Local environment template
 │
 ├── 🏗️ Django Applications
 │   ├── ecommerce_backend/           # Main Django project
 │   │   ├── settings.py              # Environment-aware configuration
 │   │   ├── urls.py                  # URL routing
+│   │   ├── health_views.py          # AWS health check endpoints
 │   │   ├── security_config.py       # Security settings
 │   │   └── security_middleware.py   # Custom security middleware
 │   │
@@ -144,16 +143,24 @@ alx-project-nexus/
 │
 ├── 📚 Documentation
 │   ├── README.md                    # Main documentation
-│   ├── DATABASE_README.md           # Database schema docs
-│   ├── DOCKER_README.md             # Docker deployment guide
-│   ├── TESTING_README.md            # Testing documentation
-│   └── SECURITY_AUDIT_REPORT.md     # Security assessment
+│   ├── docs/                        # Documentation directory
+│   │   ├── README.md                # Documentation index
+│   │   ├── AWS_DEPLOYMENT.md        # AWS serverless deployment guide
+│   │   ├── DATABASE_README.md        # Database schema docs
+│   │   ├── DOCKER_README.md          # Docker deployment guide
+│   │   ├── PRODUCTION_DEPLOYMENT.md  # VPS deployment guide
+│   │   ├── TESTING_README.md         # Testing documentation
+│   │   ├── SECURITY_AUDIT_REPORT.md  # Security assessment
+│   │   └── api_testing_with_postman.md # API testing guide
 │
 ├── ⚙️ Configuration & Scripts
-│   ├── requirements.txt             # Local development deps
 │   ├── requirements-docker.txt      # Production dependencies
+│   ├── scripts/                     # Automation and seeding scripts
+│   │   ├── django_seed_script.py    # Django shell seeding script
+│   │   ├── seed_database.py         # Comprehensive seeding script
+│   │   └── deploy.sh                # Production deployment automation
 │   ├── database_schema.sql          # Database schema
-│   ├── seed_data.sql               # Sample data
+│   ├── seed_data.sql               # Sample data SQL
 │   └── manage.py                   # Django management
 │
 └── 📦 Static & Media
@@ -167,58 +174,123 @@ alx-project-nexus/
 
 ## 🚀 Quick Start
 
-### Option 1: Docker Production Setup (Recommended)
+### AWS EC2 Ubuntu Deployment (Production)
 
-#### Prerequisites
-- Docker Engine 24.0+
-- Docker Compose V2
-- VPS or cloud server with 2GB+ RAM
+#### Prerequisites  
+- AWS EC2 instance running Ubuntu 20.04 or later
+- SSH access to your EC2 instance
+- Domain name pointed to your EC2 instance (optional for SSL)
 
-#### 1. Clone and Configure
+#### 1. EC2 Instance Setup
 ```bash
+# Connect to your EC2 instance
+ssh -i your-key.pem ubuntu@your-ec2-ip
+
+# Clone the project
 git clone https://github.com/messkely/alx-project-nexus.git
 cd alx-project-nexus
 
-# Configure production environment
-cp .env.prod.example .env.prod
-# Edit .env.prod with your production settings
+# Run automated deployment
+chmod +x scripts/deploy-ec2.sh
+sudo ./scripts/deploy-ec2.sh init
 ```
 
-#### 2. Deploy to Production
+#### 2. Post-Deployment Configuration
 ```bash
-# Make deployment script executable
-chmod +x deploy.sh
+# Update environment variables
+sudo nano /opt/alx-ecommerce/.env
+# Update SECRET_KEY, database password, and ALLOWED_HOSTS
 
-# Initialize production deployment
-./deploy.sh init
-
-# Set up SSL (optional)
-./deploy.sh ssl yourdomain.com
+# Restart services
+sudo supervisorctl restart alx-ecommerce
+sudo systemctl reload nginx
 ```
 
-#### 3. Access the Production Application
+#### 3. SSL Setup (Optional)
 ```bash
-# API Base URL (with SSL)
-https://yourdomain.com/api/v1/
+# Setup SSL certificate with your domain
+sudo ./scripts/deploy-ec2.sh ssl yourdomain.com
+```
 
-# API Documentation  
-https://yourdomain.com/api/v1/docs/
+#### 4. Access Your Application
+```bash
+# API Base URL
+http://your-ec2-ip/ or https://yourdomain.com/
 
 # Admin Panel
-https://yourdomain.com/admin/
+http://your-ec2-ip/admin/ (admin/admin123)
+
+# API Documentation
+http://your-ec2-ip/api/v1/docs/
 ```
+
+#### 5. EC2 Management Commands
+```bash
+# Update deployment
+./scripts/deploy-ec2.sh update
+
+# Check status
+./scripts/deploy-ec2.sh status
+
+# Setup SSL
+./scripts/deploy-ec2.sh ssl yourdomain.com
+```
+
+📚 **[Complete EC2 Deployment Guide](docs/EC2_DEPLOYMENT.md)**
+
+### Local Development Setup
+
+#### Prerequisites
+- Python 3.11+
+- PostgreSQL 13+ (optional, uses SQLite by default)
+
+#### 1. Setup Local Environment
+```bash
+# Clone repository
+git clone https://github.com/messkely/alx-project-nexus.git
+cd alx-project-nexus
+
+# Create and activate virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+make setup-dev
+
+# Configure local environment
+cp .env.example .env
+# Edit .env with your local configuration
+
+# Run migrations and start development server
+make local-dev
+```
+
+#### 2. Access Local Development
+```bash
+# API Documentation
+http://127.0.0.1:8000/
+
+# Admin Panel  
+http://127.0.0.1:8000/admin/
+# Username: admin, Password: admin123
+
+# Health Check
+http://127.0.0.1:8000/health/
+```
+
+📚 **[Local Development Guide](docs/LOCAL_DEVELOPMENT_STATUS.md)**
 
 #### 4. Production Management Commands
 ```bash
-./deploy.sh status        # Check service status
-./deploy.sh logs          # View application logs
-./deploy.sh backup        # Create database backup
-./deploy.sh restore       # Restore from backup
-./deploy.sh update        # Update deployment
-./deploy.sh ssl domain.com # Setup/renew SSL
+./scripts/deploy.sh status        # Check service status
+./scripts/deploy.sh logs          # View application logs
+./scripts/deploy.sh backup        # Create database backup
+./scripts/deploy.sh restore       # Restore from backup
+./scripts/deploy.sh update        # Update deployment
+./scripts/deploy.sh ssl domain.com # Setup/renew SSL
 ```
 
-### Option 2: Local Development (For Development Only)
+### Option 3: Local Development (For Development Only)
 
 #### Prerequisites
 - Python 3.11+
@@ -277,7 +349,7 @@ createdb ecommerce
 python manage.py migrate
 
 # Load sample data (optional)
-python manage.py loaddata seed_data.sql
+python scripts/seed_database.py
 
 # Create superuser
 python manage.py createsuperuser
@@ -290,7 +362,26 @@ python manage.py runserver
 
 ---
 
-## 🔐 Authentication & Authorization
+## � Database Schema Overview
+
+Our e-commerce platform uses a well-structured relational database design optimized for performance and scalability:
+
+![Database Schema](drawSQL-image-export-2025-08-08.png)
+
+### Core Tables:
+- **users**: Customer and admin user management with authentication
+- **categories**: Product categorization and organization  
+- **products**: Complete product catalog with pricing and inventory
+- **orders & order_items**: Order processing and line item tracking
+- **cart_items**: Shopping cart functionality
+- **shipping_address**: Customer shipping information management
+- **reviews**: Product reviews and ratings (extended in our implementation)
+
+> **Note**: The actual implementation includes additional features like enhanced address management, product reviews, and advanced indexing for better performance.
+
+---
+
+## �🔐 Authentication & Authorization
 
 ### JWT Authentication Flow
 
@@ -884,10 +975,12 @@ python manage.py test
 
 ### Documentation Resources
 - **Main Documentation**: [README.md](README.md)
-- **Database Schema**: [DATABASE_README.md](DATABASE_README.md)  
-- **Docker Setup**: [DOCKER_README.md](DOCKER_README.md)
-- **Testing Guide**: [TESTING_README.md](TESTING_README.md)
-- **Security Report**: [SECURITY_AUDIT_REPORT.md](SECURITY_AUDIT_REPORT.md)
+- **Database Schema**: [docs/DATABASE_README.md](docs/DATABASE_README.md)  
+- **Docker Setup**: [docs/DOCKER_README.md](docs/DOCKER_README.md)
+- **Production Deployment**: [docs/PRODUCTION_DEPLOYMENT.md](docs/PRODUCTION_DEPLOYMENT.md)
+- **Testing Guide**: [docs/TESTING_README.md](docs/TESTING_README.md)
+- **Security Report**: [docs/SECURITY_AUDIT_REPORT.md](docs/SECURITY_AUDIT_REPORT.md)
+- **API Testing**: [docs/api_testing_with_postman.md](docs/api_testing_with_postman.md)
 
 ### Getting Help
 - **GitHub Issues**: Report bugs or request features

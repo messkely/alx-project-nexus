@@ -1,73 +1,78 @@
-# ALX E-Commerce Backend - Production Makefile
+# ALX E-Commerce Backend - EC2 Ubuntu Makefile
 # Updated: August 8, 2025
 
-.PHONY: help production logs status backup restore clean dev-install dev-migrate dev-seed dev-test
+.PHONY: help ec2-deploy ec2-update ec2-status local-dev local-test local-migrate local-seed check-env setup-dev
 
 # Default target
 help:
-	@echo "🐳 ALX E-Commerce Backend - Production Commands"
-	@echo "=============================================="
+	@echo "🚀 ALX E-Commerce Backend - EC2 Ubuntu & Local Development"
+	@echo "=========================================================="
 	@echo ""
-	@echo "Production Deployment:"
-	@echo "  make production   - Start production environment"
-	@echo "  make logs         - View application logs"
-	@echo "  make status       - Check service status"
-	@echo "  make backup       - Create database backup"
-	@echo "  make restore      - Restore from backup (use BACKUP_FILE=path)"
-	@echo "  make clean        - Clean up Docker resources"
+	@echo "☁️ EC2 Ubuntu Deployment:"
+	@echo "  make ec2-deploy   - Deploy to EC2 Ubuntu (full setup)"
+	@echo "  make ec2-update   - Update existing EC2 deployment"
+	@echo "  make ec2-status   - Check EC2 deployment status"
 	@echo ""
-	@echo "Development Helpers:"
-	@echo "  make dev-install  - Install development dependencies"
-	@echo "  make dev-migrate  - Run database migrations (local)"
-	@echo "  make dev-seed     - Seed database (local)"
-	@echo "  make dev-test     - Run tests (local)"
+	@echo "💻 Local Development:"
+	@echo "  make local-dev    - Setup and run local development"
+	@echo "  make local-test   - Run test suite"
+	@echo "  make local-migrate- Run database migrations"
+	@echo "  make local-seed   - Create local admin user"
+	@echo "  make setup-dev    - Install development dependencies"
 	@echo ""
-	@echo "For full deployment automation:"
-	@echo "  ./deploy.sh init  - Initialize production deployment"
-	@echo "  ./deploy.sh ssl   - Setup SSL certificates"
-# Production Commands
-production:
-	@echo "🚀 Starting production environment..."
-	docker compose -f docker-compose.production.yml up -d --build
+	@echo "🔧 Utilities:"
+	@echo "  make check-env    - Verify environment configuration"
+	@echo ""
+	@echo "📚 Documentation:"
+	@echo "  EC2 Guide: docs/EC2_DEPLOYMENT.md"
+	@echo "  Local Setup: docs/LOCAL_DEVELOPMENT_STATUS.md"
 
-logs:
-	@echo "📋 Viewing application logs..."
-	docker compose -f docker-compose.production.yml logs -f
+# EC2 Ubuntu Deployment Commands
+ec2-deploy:
+	@echo "☁️ Deploying to EC2 Ubuntu..."
+	@./scripts/deploy-ec2.sh init
 
-status:
-	@echo "📊 Checking service status..."
-	docker compose -f docker-compose.production.yml ps
+ec2-update:
+	@echo "🔄 Updating EC2 deployment..."
+	@./scripts/deploy-ec2.sh update
 
-backup:
-	@echo "💾 Creating database backup..."
-	./deploy.sh backup
+ec2-status:
+	@echo "📊 Checking EC2 deployment status..."
+	@./scripts/deploy-ec2.sh status
 
-restore:
-	@echo "🔄 Restoring from backup..."
-	@test -n "$(BACKUP_FILE)" || (echo "❌ Please specify BACKUP_FILE=path/to/backup" && exit 1)
-	./deploy.sh restore $(BACKUP_FILE)
+# Local Development Commands
+local-dev: setup-dev local-migrate
+	@echo "🚀 Starting local development server..."
+	@echo "📚 API Documentation: http://127.0.0.1:8000/"
+	@echo "🔧 Admin Panel: http://127.0.0.1:8000/admin/ (admin/admin123)"
+	@echo "❤️ Health Check: http://127.0.0.1:8000/health/"
+	@echo ""
+	python manage.py runserver
 
-clean:
-	@echo "🧹 Cleaning up Docker resources..."
-	docker compose -f docker-compose.production.yml down -v
-	docker system prune -f
-	docker volume prune -f
-
-# Development Helpers (for local development only)
-dev-install:
+setup-dev:
 	@echo "📦 Installing development dependencies..."
 	pip install -r requirements.txt
+	@echo "✅ Dependencies installed"
 
-dev-migrate:
-	@echo "🗃️ Running migrations..."
+local-migrate:
+	@echo "🗃️ Running local database migrations..."
 	python manage.py migrate
+	@echo "✅ Migrations completed"
 
-dev-seed:
-	@echo "🌱 Seeding database..."
-	python seed_database.py
+local-seed:
+	@echo "🌱 Creating local admin user..."
+	@python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@example.com', 'admin123') if not User.objects.filter(username='admin').exists() else print('✅ Admin user already exists (admin/admin123)')"
+	@echo "✅ Local admin user ready"
 
-dev-test:
-	@echo "🧪 Running tests..."
+local-test:
+	@echo "🧪 Running test suite..."
 	python manage.py test
 
-
+# Environment and Setup
+check-env:
+	@echo "🔍 Checking environment configuration..."
+	@test -f .env || (echo "❌ .env not found for local development" && exit 1)
+	@echo "✅ Environment files found"
+	@echo ""
+	@echo "📋 Environment Status:"
+	@echo "  Local Development: .env ✅"
