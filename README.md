@@ -1,6 +1,8 @@
-# 🛒 ALX E-Commerce Backend - Multi-Deployment
+# 🛒 ALX E-Commerce Backend - Production Ready
 
-A enterprise-grade, scalable, and secure backend system for an e-commerce platform. This project demonstrates real-world backend architecture with comprehensive security, testing, Docker containerization, and multiple deployment options (Docker, AWS EC2).
+A enterprise-grade, scalable, and secure backend system for an e-commerce platform deployed on AWS EC2 with HTTPS. This project demonstrates real-world backend architecture with comprehensive security, testing, Docker containerization, and production deployment.
+
+**🌐 Live Production URL:** https://ecom-backend.store/
 
 ---
 
@@ -50,15 +52,20 @@ A enterprise-grade, scalable, and secure backend system for an e-commerce platfo
 - ✅ **Volume Management** - Persistent data and easy backups
 - ✅ **SSL Ready** - HTTPS configuration with certificate support
 
-### ☁️ **AWS EC2 Ubuntu Deployment**
-- ✅ **EC2 Instance** - Ubuntu server with automated deployment
-- ✅ **Nginx** - Reverse proxy with SSL support
-- ✅ **Gunicorn** - WSGI server for Django application
-- ✅ **PostgreSQL** - Production database setup
-- ✅ **Redis** - Caching and session storage
-- ✅ **Supervisor** - Process management and monitoring
-- ✅ **Let's Encrypt SSL** - Automated SSL certificate setup
-- ✅ **UFW Firewall** - Security configuration
+### 🔒 **SSL/HTTPS Security**
+- ✅ **Let's Encrypt SSL** - Trusted SSL certificates with auto-renewal
+- ✅ **HTTPS Enforcement** - Automatic HTTP to HTTPS redirects
+- ✅ **Domain Security** - Production domain (ecom-backend.store)
+- ✅ **Security Headers** - HSTS, CSP, X-Frame-Options protection
+- ✅ **HTTP/2 Support** - Modern protocol for better performance
+
+### ☁️ **AWS EC2 Production Deployment**
+- ✅ **EC2 Ubuntu Server** - Production server on AWS (3.80.35.89)
+- ✅ **Docker Production** - Multi-container production setup
+- ✅ **Nginx Reverse Proxy** - SSL termination and load balancing
+- ✅ **Let's Encrypt Integration** - Automated certificate management
+- ✅ **Health Monitoring** - Container health checks and auto-restart
+- ✅ **Production Logging** - Comprehensive logging and monitoring
 
 ---
 
@@ -182,6 +189,13 @@ alx-project-nexus/
 ---
 
 ## 🚀 Quick Start
+
+### 🌐 Production Access
+The application is currently deployed and accessible at:
+- **API Base URL:** https://ecom-backend.store/
+- **Health Check:** https://ecom-backend.store/health/
+- **Admin Panel:** https://ecom-backend.store/admin/ (secure login required)
+- **API Documentation:** https://ecom-backend.store/api/v1/docs/
 
 ### 🐳 Docker Deployment (Recommended)
 

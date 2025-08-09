@@ -1,61 +1,54 @@
-# Scripts Directory
+# 🛠️ Scripts Directory
 
-This directory contains all automation and seeding scripts for the ALX E-Commerce Backend project.
+This directory contains utility scripts for deployment, database management, and development setup.
 
-## 📋 Scripts Overview
+## � Current Scripts
 
-### ☁️ EC2 Ubuntu Deployment Script
-- **`deploy-ec2.sh`** - AWS EC2 Ubuntu deployment automation
-  - Initialize production environment on EC2
-  - Setup Nginx, Gunicorn, PostgreSQL, Redis
-  - SSL certificate management with Let's Encrypt
-  - Security hardening and monitoring setup  
-  - Usage: `./scripts/deploy-ec2.sh [command]`
+### 🚀 Production Deployment
+- **`setup-domain-ssl.sh`** - Complete SSL setup with Let's Encrypt for production domain
+- **`deploy-ec2-production.sh`** - Production deployment script for EC2
+- **`start-ec2-production.sh`** - Start production services on EC2
+- **`verify-dns.sh`** - Verify DNS configuration for domain setup
 
-### 🌱 Database Seeding Scripts
-- **`seed_database.py`** - Comprehensive database seeding
-  - Creates sample users, products, categories, orders, reviews
-  - Uses Django ORM for data creation
-  - Realistic e-commerce data for testing
-  - Usage: `python scripts/seed_database.py`
+### 🧪 Testing & Monitoring  
+- **`test-django-health.sh`** - Test Django health endpoints
+- **`test-ec2-connection.sh`** - Test EC2 connectivity and services
+- **`debug-ec2.sh`** - Debug EC2 deployment issues
 
-- **`django_seed_script.py`** - Django shell seeding script
-  - Alternative seeding method using Django shell
-  - Same data as seed_database.py but shell-based
-  - Usage: `python manage.py shell < scripts/django_seed_script.py`
+### 🗄️ Database Management
+- **`seed_database.py`** - Populate database with sample data
+- **`django_seed_script.py`** - Django-based seeding script
+- **`seed_data.sql`** - SQL seed data for direct database import
 
-## 🔧 Usage Instructions
+### 🔧 Development Utilities
+- **`setup_dev.py`** - Set up development environment
+- **`start_production.sh`** - Production startup script
 
-### EC2 Ubuntu Deployment
+## 📋 Usage Examples
+
+### Production SSL Setup
 ```bash
-# Make deployment script executable
-chmod +x scripts/deploy-ec2.sh
-
-# Deploy to EC2 Ubuntu instance
-sudo ./scripts/deploy-ec2.sh init
-
-# Update existing deployment
-./scripts/deploy-ec2.sh update
-
-# Check deployment status
-./scripts/deploy-ec2.sh status
-./scripts/deploy.sh status
-
-# Create backup
-./scripts/deploy.sh backup
-
-# View logs
-./scripts/deploy.sh logs
+sudo ./scripts/setup-domain-ssl.sh
 ```
 
-### Database Seeding
+### Deploy to EC2 Production
 ```bash
-# Method 1: Direct Python execution (recommended)
+./scripts/deploy-ec2-production.sh
+```
+
+### Seed Database
+```bash
 python scripts/seed_database.py
-
-# Method 2: Django shell execution
-python manage.py shell < scripts/django_seed_script.py
 ```
+
+### Health Check
+```bash
+./scripts/test-django-health.sh
+```
+
+---
+
+**Note:** All scripts are designed to work from the project root directory.
 
 ## 📊 Script Features
 

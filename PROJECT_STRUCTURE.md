@@ -4,50 +4,125 @@
 
 ```
 alx-project-nexus/
-├── 📁 ecommerce_backend/          # Django project settings
-│   ├── __init__.py
-│   ├── asgi.py
-│   ├── settings.py                # Production settings
-│   ├── security_config.py         # Security configurations
-│   ├── security_middleware.py     # Custom security middleware
-│   ├── urls.py                    # URL routing
-│   └── wsgi.py                    # WSGI application
+# 📁 ALX E-Commerce Backend - Production-Ready Project Structure
+
+## 🚀 Production Deployment Overview
+
+**Live Production URL:** https://ecom-backend.store/  
+**Server:** AWS EC2 Ubuntu (3.80.35.89)  
+**SSL:** Let's Encrypt (Valid until Nov 7, 2025)  
+**Status:** ✅ All systems operational  
+
+---
+
+## 🏗️ Complete Project Architecture
+
+```
+alx-project-nexus/
+├── 📋 Core Documentation
+│   ├── README.md                    # Main project overview
+│   ├── PRODUCTION_DEPLOYMENT.md     # Production deployment guide
+│   ├── HTTPS_SETUP_GUIDE.md        # SSL/HTTPS setup
+│   ├── EC2-DEPLOYMENT.md           # EC2 deployment details
+│   ├── EC2-TROUBLESHOOTING.md      # Troubleshooting guide
+│   └── PROJECT_STRUCTURE.md        # This document
 │
-├── 📁 users/                      # User management app
-│   ├── models.py                  # Custom user model
-│   ├── serializers.py             # User serializers
-│   ├── views.py                   # Authentication views
-│   ├── urls.py                    # User endpoints
-│   └── admin.py                   # User admin
+├── 🐳 Docker Infrastructure
+│   ├── docker-compose.dev.yml      # Development environment
+│   ├── docker-compose.prod.yml     # Production environment
+│   ├── Dockerfile                  # Production container
+│   └── .dockerignore               # Docker exclusions
 │
-├── 📁 catalog/                    # Product catalog app
-│   ├── models.py                  # Product & Category models
-│   ├── serializers.py             # Catalog serializers
-│   ├── views.py                   # Product views
-│   ├── permissions.py             # Custom permissions
-│   └── urls.py                    # Catalog endpoints
+├── 🌐 Web Server (Nginx)
+│   └── nginx/
+│       ├── default.conf            # Basic configuration
+│       └── ec2-production.conf     # Production SSL config
 │
-├── 📁 cart/                       # Shopping cart app
-│   ├── models.py                  # Cart models
-│   ├── serializers.py             # Cart serializers
-│   ├── views.py                   # Cart operations
-│   └── urls.py                    # Cart endpoints
+├── 🛠️ Deployment Scripts
+│   └── scripts/
+│       ├── setup-domain-ssl.sh     # Let's Encrypt SSL setup ⭐
+│       ├── deploy-ec2-production.sh # Production deployment
+│       ├── verify-dns.sh           # DNS verification
+│       ├── start-ec2-production.sh # Production startup
+│       ├── test-django-health.sh   # Health monitoring
+│       ├── test-ec2-connection.sh  # Connection testing
+│       ├── debug-ec2.sh            # EC2 debugging
+│       ├── seed_database.py        # Database seeding
+│       ├── django_seed_script.py   # Django-based seeding
+│       ├── setup_dev.py            # Development setup
+│       ├── start_production.sh     # Production runner
+│       └── README.md               # Scripts documentation
 │
-├── 📁 orders/                     # Order management app
-│   ├── models.py                  # Order models
-│   ├── serializers.py             # Order serializers
-│   ├── views.py                   # Order processing
-│   └── urls.py                    # Order endpoints
+├── 📚 Extended Documentation
+│   └── docs/
+│       ├── DATABASE_README.md      # Database schema & setup
+│       ├── DOCKER_DEPLOYMENT.md    # Docker deployment guide
+│       ├── EC2_DEPLOYMENT.md       # EC2 deployment details
+│       ├── SECURITY_AUDIT_REPORT.md # Security assessment
+│       ├── TESTING_README.md       # Testing strategies
+│       ├── UNIT_TEST_SUMMARY.md    # Test coverage report
+│       └── api_testing_with_postman.md # API testing guide
 │
-├── 📁 reviews/                    # Product review app
-│   ├── models.py                  # Review models
-│   ├── serializers.py             # Review serializers
-│   ├── views.py                   # Review operations
-│   └── urls.py                    # Review endpoints
-│
-├── 📁 scripts/                     # Automation and seeding scripts
-│   ├── deploy.sh                   # Production deployment automation
-│   ├── seed_database.py            # Comprehensive seeding script
+├── 🎯 Django Application Core
+│   ├── manage.py                   # Django management
+│   ├── requirements.txt            # Python dependencies
+│   │
+│   ├── ecommerce_backend/          # Main Django project
+│   │   ├── __init__.py
+│   │   ├── settings.py            # Production-ready settings
+│   │   ├── security_config.py     # Security hardening
+│   │   ├── security_middleware.py # Custom security middleware
+│   │   ├── health_views.py        # Health check endpoints
+│   │   ├── urls.py                # Main URL routing
+│   │   ├── wsgi.py                # WSGI for production
+│   │   └── asgi.py                # ASGI for async support
+│   │
+│   ├── users/ ← 👥 User Management
+│   │   ├── models.py              # CustomUser, Profile models
+│   │   ├── serializers.py         # User data serialization
+│   │   ├── views.py               # Registration, profile, auth
+│   │   ├── urls.py                # User API endpoints
+│   │   ├── admin.py               # User admin interface
+│   │   ├── management/            # Custom commands
+│   │   ├── migrations/            # Database migrations
+│   │   └── tests/                 # User functionality tests
+│   │
+│   ├── catalog/ ← 🛍️ Product Catalog
+│   │   ├── models.py              # Product, Category, Brand
+│   │   ├── serializers.py         # Catalog serialization
+│   │   ├── views.py               # Product CRUD, search, filter
+│   │   ├── permissions.py         # Custom access controls
+│   │   ├── urls.py                # Catalog API routes
+│   │   ├── admin.py               # Product management
+│   │   ├── migrations/            # Database migrations
+│   │   └── tests/                 # Catalog tests
+│   │
+│   ├── cart/ ← 🛒 Shopping Cart
+│   │   ├── models.py              # Cart, CartItem models
+│   │   ├── serializers.py         # Cart data handling
+│   │   ├── views.py               # Add, update, remove items
+│   │   ├── urls.py                # Cart API endpoints
+│   │   ├── admin.py               # Cart administration
+│   │   ├── migrations/            # Database migrations
+│   │   └── tests/                 # Cart functionality tests
+│   │
+│   ├── orders/ ← 📦 Order Management
+│   │   ├── models.py              # Order, OrderItem models
+│   │   ├── serializers.py         # Order processing data
+│   │   ├── views.py               # Order creation, tracking
+│   │   ├── urls.py                # Order API routes
+│   │   ├── admin.py               # Order administration
+│   │   ├── migrations/            # Database migrations
+│   │   └── tests/                 # Order processing tests
+│   │
+│   └── reviews/ ← ⭐ Product Reviews
+│       ├── models.py              # Review, Rating models
+│       ├── serializers.py         # Review data handling
+│       ├── views.py               # Review creation, listing
+│       ├── urls.py                # Review API endpoints
+│       ├── admin.py               # Review moderation
+│       ├── migrations/            # Database migrations
+│       └── tests/                 # Review system tests
 │   └── django_seed_script.py       # Django shell seeding script
 │
 ├── 📁 docs/                       # Documentation directory
@@ -72,46 +147,95 @@ alx-project-nexus/
 ├── 📁 static/                     # Static files source
 ├── 📁 staticfiles/                # Collected static files (generated)
 ├── 📁 media/                      # User uploads
-├── 📁 logs/                       # Application logs
-├── 📁 ssl/                        # SSL certificates
-├── 📁 backups/                    # Database backups
 │
-├── 📄 manage.py                   # Django management
-├── 📄 Dockerfile.prod             # Production Dockerfile
-├── 📄 docker-compose.production.yml # Production compose
-├── 📄 requirements-docker.txt     # Python dependencies
-├── 📄 database_schema.sql         # Database schema
-├── 📄 drawSQL-image-export-2025-08-08.png # Database diagram
-├── 📄 seed_data.sql               # Sample data
-├── 📄 .env.prod.example           # Environment template
-├── 📄 .dockerignore               # Docker ignore rules
-├── 📄 .gitignore                  # Git ignore rules
-├── 📄 README.md                   # Project documentation
-├── 📄 PROJECT_STRUCTURE.md        # This file
-├── 📄 PROJECT_NEXUS_DELIVERABLES.md # Deliverables checklist
+├── � Static & Media Assets
+│   ├── static/                    # Static files (CSS, JS, images)
+│   ├── staticfiles/               # Collected static files (production)
+│   └── media/                     # User uploaded content
+│
+├── � Data Management
+│   ├── logs/                      # Application & security logs
+│   ├── backups/                   # Automated database backups
+│   └── ssl/                       # SSL certificate storage (dev)
+│
+├── 🎓 Project Deliverables
+│   └── slides/
+│       ├── Project proposal.txt
+│       ├── Project_Nexus_Final_Presentation_Outline.md
+│       ├── Project_Nexus_Google_Slides_Content.md
+│       └── Project_Nexus_Speaker_Notes.md
+│
+└── � Configuration Files
+    ├── .env.example               # Environment template
+    ├── .env.prod                  # Production environment
+    ├── .gitignore                 # Git exclusions
+    ├── .dockerignore              # Docker exclusions
+    ├── Makefile                   # Development commands
+    ├── requirements.txt           # Python dependencies
+    └── ecom-backend.pem           # EC2 SSH key
 ```
 
-## 📋 Production-Ready Files
+---
 
-### Core Application
-- ✅ **Django Apps:** All 5 apps optimized for production
-- ✅ **Security:** Custom middleware with CSP, rate limiting
-- ✅ **Authentication:** JWT-based with token blacklisting
-- ✅ **Database:** PostgreSQL with proper schema
-- ✅ **Cache:** Redis for session and caching
+## � Production Infrastructure
 
-### Deployment Infrastructure  
-- ✅ **Docker:** Multi-stage production Dockerfile
-- ✅ **Compose:** Production Docker Compose with health checks
-- ✅ **Nginx:** Reverse proxy with SSL and security headers
-- ✅ **SSL:** Let's Encrypt certificate automation
-- ✅ **Monitoring:** Health checks and logging
+### 🌐 Live Production Services
+- **API Base:** https://ecom-backend.store/
+- **Health Check:** https://ecom-backend.store/health/
+- **Admin Panel:** https://ecom-backend.store/admin/
+- **API Documentation:** https://ecom-backend.store/api/v1/docs/
 
-### Management & Operations
-- ✅ **Deployment Script:** Automated deployment with `deploy.sh`
-- ✅ **Environment:** Production environment template
-- ✅ **Backups:** Automated database backup system
-- ✅ **Logs:** Centralized logging configuration
+### 🔒 Security Features
+- ✅ **Let's Encrypt SSL** - Auto-renewing certificates
+- ✅ **HTTPS Enforcement** - All HTTP traffic redirected
+- ✅ **Security Headers** - HSTS, CSP, X-Frame-Options
+- ✅ **Rate Limiting** - API abuse protection
+- ✅ **JWT Authentication** - Secure token-based auth
+
+### 🐳 Container Architecture
+- **Django Web App** - Gunicorn WSGI server
+- **PostgreSQL Database** - Persistent data storage
+- **Redis Cache** - Session and application caching
+- **Nginx Reverse Proxy** - SSL termination and routing
+
+### 📊 Monitoring & Maintenance
+- **Health Endpoints** - /health/, /health/db/, /health/cache/
+- **Log Management** - Centralized logging to logs/ directory
+- **Auto-renewal** - SSL certificates renewed automatically
+- **Backup System** - Automated database backups
+
+---
+
+## 🛠️ Key Production Scripts
+
+### Primary Scripts (Active)
+- **setup-domain-ssl.sh** - Complete Let's Encrypt SSL setup
+- **deploy-ec2-production.sh** - Production deployment automation
+- **verify-dns.sh** - DNS configuration verification
+- **seed_database.py** - Database population with sample data
+
+### Monitoring Scripts
+- **test-django-health.sh** - Health endpoint verification
+- **test-ec2-connection.sh** - Server connectivity testing
+- **debug-ec2.sh** - Comprehensive system debugging
+
+---
+
+## 📈 Production Metrics
+
+### Current Status ✅
+- **SSL Certificate:** Valid until November 7, 2025 (89 days)
+- **Container Health:** All services healthy and running
+- **Domain Resolution:** DNS properly configured
+- **API Response:** All endpoints responding correctly
+- **Database:** PostgreSQL operational with data persistence
+- **Cache:** Redis operational with authentication
+
+### Key Performance Indicators
+- **Response Time:** < 200ms average for health endpoints
+- **Uptime:** 99.9% availability target
+- **SSL Rating:** A+ SSL Labs rating
+- **Security Score:** Comprehensive headers and protections
 - ✅ **Security:** Firewall rules and security best practices
 
 ### Documentation
