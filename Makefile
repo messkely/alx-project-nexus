@@ -21,6 +21,8 @@ help:
 	@echo "  make ec2-deploy   - Deploy to EC2 Ubuntu (full setup)"
 	@echo "  make ec2-update   - Update existing EC2 deployment"
 	@echo "  make ec2-status   - Check EC2 deployment status"
+	@echo "  make ec2-logs     - View EC2 production logs"
+	@echo "  make ec2-restart  - Restart EC2 services"
 	@echo ""
 	@echo "💻 Local Development:"
 	@echo "  make local-dev    - Setup and run local development"
@@ -101,18 +103,46 @@ docker-stop:
 	@echo "⏹️  Stopping Docker services..."
 	docker compose stop
 
-# EC2 Ubuntu Deployment Commands
+# EC2 Ubuntu Deployment Commands (Production)
 ec2-deploy:
-	@echo "☁️ Deploying to EC2 Ubuntu..."
-	@./scripts/deploy-ec2.sh init
+	@echo "☁️ Deploying to EC2 Ubuntu (3.80.35.89)..."
+	@./scripts/deploy-ec2-production.sh setup
 
 ec2-update:
 	@echo "🔄 Updating EC2 deployment..."
-	@./scripts/deploy-ec2.sh update
+	@./scripts/deploy-ec2-production.sh update
 
 ec2-status:
 	@echo "📊 Checking EC2 deployment status..."
-	@./scripts/deploy-ec2.sh status
+	@./scripts/deploy-ec2-production.sh status
+
+ec2-logs:
+	@echo "📋 Viewing EC2 production logs..."
+	@./scripts/deploy-ec2-production.sh logs
+
+ec2-restart:
+	@echo "🔄 Restarting EC2 services..."
+	@./scripts/deploy-ec2-production.sh restart
+
+# Production Docker Commands
+prod-build:
+	@echo "🔨 Building production Docker images..."
+	docker compose -f docker-compose.prod.yml build
+
+prod-up:
+	@echo "🚀 Starting production environment..."
+	@echo "📚 API Documentation: http://3.80.35.89/"
+	@echo "🔧 Admin Panel: http://3.80.35.89/admin/"
+	@echo "❤️ Health Check: http://3.80.35.89/health/"
+	docker compose -f docker-compose.prod.yml up -d
+
+prod-down:
+	@echo "⏹️  Stopping production environment..."
+	docker compose -f docker-compose.prod.yml down
+
+prod-logs:
+	@echo "📋 Viewing production logs..."
+	docker compose -f docker-compose.prod.yml logs -f
 
 # Local Development Commands
 local-dev: setup-dev local-migrate
