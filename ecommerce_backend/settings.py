@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 	
     # third-party apps
+    'corsheaders',  # CORS handling for API requests
     'rest_framework_simplejwt.token_blacklist',
     'rest_framework',
     'rest_framework.authtoken',
@@ -64,6 +65,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Must be at the top
     'django.middleware.security.SecurityMiddleware',
     'ecommerce_backend.security_middleware.SecurityHeadersMiddleware',
     'ecommerce_backend.security_middleware.RateLimitMiddleware',
@@ -319,4 +321,33 @@ import os
 logs_dir = BASE_DIR / 'logs'
 if not logs_dir.exists():
     os.makedirs(logs_dir, exist_ok=True)
+
+# CORS Configuration
+CORS_ALLOWED_ORIGINS = [
+    "https://ecom-backend.store",
+    "http://localhost:3000",  # For local frontend development
+    "http://127.0.0.1:3000",
+]
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://.*\.ecom-backend\.store$",  # Allow subdomains
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+# For development only - remove in production
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
 

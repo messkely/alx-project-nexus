@@ -11,6 +11,8 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import send_mail
 from django.conf import settings
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 from .models import User, Address
 from .serializers import (
     CustomTokenObtainPairSerializer,
@@ -30,6 +32,91 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 class RegisterView(APIView):
     permission_classes = [AllowAny]
 
+    @swagger_auto_schema(
+        operation_description="Register a new user account",
+        operation_summary="User Registration",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['email', 'username', 'password', 'password_confirm'],
+            properties={
+                'email': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    format=openapi.FORMAT_EMAIL,
+                    description='User email address (will be used for login)',
+                    example='user@example.com'
+                ),
+                'username': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description='Unique username for the account',
+                    example='johndoe123'
+                ),
+                'first_name': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description='User first name (optional)',
+                    example='John'
+                ),
+                'last_name': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description='User last name (optional)',
+                    example='Doe'
+                ),
+                'password': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    format=openapi.FORMAT_PASSWORD,
+                    description='Password (minimum 8 characters)',
+                    example='SecurePass123!'
+                ),
+                'password_confirm': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    format=openapi.FORMAT_PASSWORD,
+                    description='Confirm password (must match password)',
+                    example='SecurePass123!'
+                ),
+            }
+        ),
+        responses={
+            201: openapi.Response(
+                description="User successfully created",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'user': openapi.Schema(
+                            type=openapi.TYPE_OBJECT,
+                            properties={
+                                'id': openapi.Schema(type=openapi.TYPE_INTEGER, example=1),
+                                'email': openapi.Schema(type=openapi.TYPE_STRING, example='user@example.com'),
+                                'username': openapi.Schema(type=openapi.TYPE_STRING, example='johndoe123'),
+                                'first_name': openapi.Schema(type=openapi.TYPE_STRING, example='John'),
+                                'last_name': openapi.Schema(type=openapi.TYPE_STRING, example='Doe'),
+                                'date_joined': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATETIME),
+                            }
+                        ),
+                        'refresh': openapi.Schema(type=openapi.TYPE_STRING, description='JWT refresh token'),
+                        'access': openapi.Schema(type=openapi.TYPE_STRING, description='JWT access token'),
+                    }
+                )
+            ),
+            400: openapi.Response(
+                description="Validation errors",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'email': openapi.Schema(
+                            type=openapi.TYPE_ARRAY,
+                            items=openapi.Schema(type=openapi.TYPE_STRING),
+                            example=['This field is required.']
+                        ),
+                        'password': openapi.Schema(
+                            type=openapi.TYPE_ARRAY,
+                            items=openapi.Schema(type=openapi.TYPE_STRING),
+                            example=['This password is too short. It must contain at least 8 characters.']
+                        ),
+                    }
+                )
+            )
+        },
+        tags=['Authentication']
+    )
     def post(self, request):
         serializer = UserRegistrationSerializer(data=request.data)
         if serializer.is_valid():

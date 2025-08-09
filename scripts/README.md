@@ -1,4 +1,4 @@
-# 🛠️ Scripts Directory
+c# 🛠️ Scripts Directory
 
 This directory contains utility scripts for deployment, database management, and development setup.
 

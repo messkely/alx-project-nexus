@@ -10,15 +10,16 @@ from .health_views import health_check as aws_health_check, readiness_check, liv
 
 schema_view = get_schema_view(
    openapi.Info(
-      title="E-Commerce API",
+      title="ALX E-Commerce API",
       default_version='v1',
-      description="API documentation for the e-commerce backend",
-      terms_of_service="https://www.example.com/policies/terms/",
-      contact=openapi.Contact(email="contact@example.com"),
-      license=openapi.License(name="BSD License"),
+      description="Production API for ALX E-Commerce Backend - A comprehensive e-commerce platform with user management, product catalog, shopping cart, orders, and reviews.",
+      terms_of_service="https://ecom-backend.store/terms/",
+      contact=openapi.Contact(email="admin@ecom-backend.store"),
+      license=openapi.License(name="MIT License"),
    ),
    public=True,
    permission_classes=(permissions.AllowAny,),
+   url="https://ecom-backend.store/api/v1/",  # Force HTTPS in documentation
 )
 
 def health_check(request):
