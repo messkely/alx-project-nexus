@@ -62,7 +62,7 @@ class OrderCancellationTestCase(APITestCase):
             price=Decimal('99.99'),
             category=self.category,
             slug='test-product',
-            inventory=10
+            stock_quantity=10
         )
         
         # Create test orders with different statuses
@@ -70,28 +70,28 @@ class OrderCancellationTestCase(APITestCase):
             user=self.user,
             status='pending',
             total_amount=Decimal('199.98'),
-            shipping_address=self.address
+            
         )
         
         self.paid_order = Order.objects.create(
             user=self.user,
             status='paid',
             total_amount=Decimal('99.99'),
-            shipping_address=self.address
+            
         )
         
         self.shipped_order = Order.objects.create(
             user=self.user,
             status='shipped',
             total_amount=Decimal('149.99'),
-            shipping_address=self.address
+            
         )
         
         self.delivered_order = Order.objects.create(
             user=self.user,
             status='delivered',
             total_amount=Decimal('79.99'),
-            shipping_address=self.address
+            
         )
         
         # Create order items
@@ -99,14 +99,16 @@ class OrderCancellationTestCase(APITestCase):
             order=self.pending_order,
             product=self.product,
             quantity=2,
-            price=Decimal('99.99')
+            unit_price=Decimal('99.99'),
+            subtotal=Decimal('199.98')
         )
         
         OrderItem.objects.create(
             order=self.paid_order,
             product=self.product,
             quantity=1,
-            price=Decimal('99.99')
+            unit_price=Decimal('99.99'),
+            subtotal=Decimal('99.99')
         )
         
         # Get JWT token
@@ -265,7 +267,7 @@ class OrderCancellationTestCase(APITestCase):
             user=self.user,
             status='paid',
             total_amount=Decimal('99.99'),
-            shipping_address=self.address
+            
         )
         
         # Manually set creation date to be old (simulate old order)

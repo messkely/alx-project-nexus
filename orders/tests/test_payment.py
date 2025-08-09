@@ -55,7 +55,7 @@ class PaymentEndpointTestCase(APITestCase):
             price=Decimal('99.99'),
             category=self.category,
             slug='test-product',
-            inventory=10
+            stock_quantity=10
         )
         
         # Create test order
@@ -63,7 +63,7 @@ class PaymentEndpointTestCase(APITestCase):
             user=self.user,
             status='pending',
             total_amount=Decimal('199.98'),
-            shipping_address=self.address
+            
         )
         
         # Create order items
@@ -71,7 +71,8 @@ class PaymentEndpointTestCase(APITestCase):
             order=self.order,
             product=self.product,
             quantity=2,
-            price=Decimal('99.99')
+            unit_price=Decimal('99.99'),
+            subtotal=Decimal('199.98')
         )
         
         # Get JWT token

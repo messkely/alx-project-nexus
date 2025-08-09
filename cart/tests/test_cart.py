@@ -15,7 +15,7 @@ class CartModelTest(TestCase):
             description="Wireless Mouse",
             price=15.99,
             category=self.category,
-            inventory=10
+            stock_quantity=10
         )
         self.cart = Cart.objects.create(user=self.user)
         self.cart_item = CartItem.objects.create(

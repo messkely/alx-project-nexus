@@ -1,6 +1,6 @@
-# 🛒 ALX E-Commerce Backend - AWS EC2
+# 🛒 ALX E-Commerce Backend - Multi-Deployment
 
-A enterprise-grade, scalable, and secure backend system for an e-commerce platform. This project demonstrates real-world backend architecture with comprehensive security, testing, and AWS EC2 deployment capabilities.
+A enterprise-grade, scalable, and secure backend system for an e-commerce platform. This project demonstrates real-world backend architecture with comprehensive security, testing, Docker containerization, and multiple deployment options (Docker, AWS EC2).
 
 ---
 
@@ -40,6 +40,15 @@ A enterprise-grade, scalable, and secure backend system for an e-commerce platfo
 - ✅ **API Testing** - Complete endpoint testing with authentication
 - ✅ **Security Testing** - Vulnerability and permission testing
 - ✅ **Test Coverage** - High test coverage for critical functionality
+
+### 🐳 **Docker Containerization**
+- ✅ **Multi-Container Setup** - Django, PostgreSQL, Redis, Nginx
+- ✅ **Development Environment** - Hot reload with Docker Compose
+- ✅ **Production Environment** - Optimized containers with Gunicorn
+- ✅ **Nginx Reverse Proxy** - Static files and load balancing
+- ✅ **Health Checks** - Container monitoring and auto-restart
+- ✅ **Volume Management** - Persistent data and easy backups
+- ✅ **SSL Ready** - HTTPS configuration with certificate support
 
 ### ☁️ **AWS EC2 Ubuntu Deployment**
 - ✅ **EC2 Instance** - Ubuntu server with automated deployment
@@ -174,7 +183,74 @@ alx-project-nexus/
 
 ## 🚀 Quick Start
 
-### AWS EC2 Ubuntu Deployment (Production)
+### 🐳 Docker Deployment (Recommended)
+
+#### Development Environment
+```bash
+# Clone repository
+git clone https://github.com/messkely/alx-project-nexus.git
+cd alx-project-nexus
+
+# Start development environment with hot reload
+make docker-dev
+
+# Access application
+# API: http://localhost:8000
+# Admin: http://localhost:8000/admin (admin/admin123)
+# API Documentation: http://localhost:8000/api/v1/docs/
+```
+
+#### Production Environment
+```bash
+# Build and start production containers
+make docker-prod
+
+# Setup SSL certificates (optional)
+sudo mkdir -p ssl/
+# Copy your SSL certificate files to the ssl/ directory
+
+# Application will be available at:
+# HTTP: http://localhost
+# HTTPS: https://localhost (with SSL certificates)
+```
+
+### 💻 Local Development Setup
+
+#### Prerequisites
+- Python 3.11+
+- PostgreSQL 13+ (optional, uses SQLite by default)
+
+#### 1. Setup Local Environment
+```bash
+# Clone repository
+git clone https://github.com/messkely/alx-project-nexus.git
+cd alx-project-nexus
+
+# Create and activate virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+make setup
+
+# Configure local environment
+cp .env.example .env
+# Edit .env with your local configuration
+
+# Setup database and run server
+make migrate
+make superuser
+make run
+```
+
+#### 2. Access Local Development
+```bash
+# API Documentation: http://127.0.0.1:8000/
+# Admin Panel: http://127.0.0.1:8000/admin/
+# Health Check: http://127.0.0.1:8000/health/
+```
+
+### ☁️ AWS EC2 Ubuntu Deployment
 
 #### Prerequisites  
 - AWS EC2 instance running Ubuntu 20.04 or later
@@ -195,100 +271,61 @@ chmod +x scripts/deploy-ec2.sh
 sudo ./scripts/deploy-ec2.sh init
 ```
 
-#### 2. Post-Deployment Configuration
+#### 2. Access Your Application
 ```bash
-# Update environment variables
-sudo nano /opt/alx-ecommerce/.env
-# Update SECRET_KEY, database password, and ALLOWED_HOSTS
-
-# Restart services
-sudo supervisorctl restart alx-ecommerce
-sudo systemctl reload nginx
+# API Base URL: http://your-ec2-ip/ or https://yourdomain.com/
+# Admin Panel: http://your-ec2-ip/admin/ (admin/admin123)
+# API Documentation: http://your-ec2-ip/api/v1/docs/
 ```
 
-#### 3. SSL Setup (Optional)
+📚 **[Complete EC2 Deployment Guide](docs/EC2_DEPLOYMENT.md)**  
+📚 **[Docker Deployment Guide](docs/DOCKER_DEPLOYMENT.md)**
+
+---
+
+## 🛠️ Makefile Commands
+
+### 🐳 Docker Commands
 ```bash
-# Setup SSL certificate with your domain
-sudo ./scripts/deploy-ec2.sh ssl yourdomain.com
+# Development
+make docker-dev          # Start development environment with hot reload
+make docker-logs         # View container logs  
+make docker-shell        # Access Django container shell
+make docker-migrate      # Run database migrations in container
+make docker-superuser    # Create superuser in container
+make docker-test         # Run tests in container
+
+# Production  
+make docker-prod         # Start production environment
+make docker-build        # Build Docker images
+
+# Management
+make docker-stop         # Stop all containers
+make docker-clean        # Clean up Docker resources
+make docker-restart      # Restart all containers
 ```
 
-#### 4. Access Your Application
+### 💻 Local Development Commands
 ```bash
-# API Base URL
-http://your-ec2-ip/ or https://yourdomain.com/
+# Environment Setup
+make setup               # Create virtual environment and install dependencies
+make install             # Install/update dependencies
+make migrate             # Run database migrations
+make superuser           # Create Django superuser
+make run                 # Start development server
 
-# Admin Panel
-http://your-ec2-ip/admin/ (admin/admin123)
+# Database Management
+make backup-db           # Create database backup
+make restore-db          # Restore database from backup
+make seed-data           # Populate database with sample data
 
-# API Documentation
-http://your-ec2-ip/api/v1/docs/
+# Testing & Quality
+make test                # Run test suite
+make test-coverage       # Run tests with coverage report
+make lint                # Run code linting
 ```
 
-#### 5. EC2 Management Commands
-```bash
-# Update deployment
-./scripts/deploy-ec2.sh update
-
-# Check status
-./scripts/deploy-ec2.sh status
-
-# Setup SSL
-./scripts/deploy-ec2.sh ssl yourdomain.com
-```
-
-📚 **[Complete EC2 Deployment Guide](docs/EC2_DEPLOYMENT.md)**
-
-### Local Development Setup
-
-#### Prerequisites
-- Python 3.11+
-- PostgreSQL 13+ (optional, uses SQLite by default)
-
-#### 1. Setup Local Environment
-```bash
-# Clone repository
-git clone https://github.com/messkely/alx-project-nexus.git
-cd alx-project-nexus
-
-# Create and activate virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
-make setup-dev
-
-# Configure local environment
-cp .env.example .env
-# Edit .env with your local configuration
-
-# Run migrations and start development server
-make local-dev
-```
-
-#### 2. Access Local Development
-```bash
-# API Documentation
-http://127.0.0.1:8000/
-
-# Admin Panel  
-http://127.0.0.1:8000/admin/
-# Username: admin, Password: admin123
-
-# Health Check
-http://127.0.0.1:8000/health/
-```
-
-📚 **[Local Development Guide](docs/LOCAL_DEVELOPMENT_STATUS.md)**
-
-#### 4. Production Management Commands
-```bash
-./scripts/deploy.sh status        # Check service status
-./scripts/deploy.sh logs          # View application logs
-./scripts/deploy.sh backup        # Create database backup
-./scripts/deploy.sh restore       # Restore from backup
-./scripts/deploy.sh update        # Update deployment
-./scripts/deploy.sh ssl domain.com # Setup/renew SSL
-```
+---
 
 ### Option 3: Local Development (For Development Only)
 

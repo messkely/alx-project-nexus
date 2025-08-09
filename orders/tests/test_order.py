@@ -12,7 +12,7 @@ class OrderModelTest(TestCase):
             title="Smartphone",
             description="A new smartphone",
             price=699.99,
-            inventory=50,
+            stock_quantity=50,
             category=self.category
         )
         self.order = Order.objects.create(
@@ -37,7 +37,7 @@ class OrderItemModelTest(TestCase):
             title="USB-C Cable",
             description="Fast charging cable",
             price=19.99,
-            inventory=200,
+            stock_quantity=200,
             category=self.category
         )
         self.order = Order.objects.create(

@@ -61,7 +61,7 @@ class ReviewsTestCase(APITestCase):
             price=Decimal('99.99'),
             category=self.category,
             slug='test-product',
-            inventory=10
+            stock_quantity=10
         )
         
         # Create test order (delivered so user can review)
@@ -69,14 +69,15 @@ class ReviewsTestCase(APITestCase):
             user=self.user,
             status='delivered',
             total_amount=Decimal('99.99'),
-            shipping_address=self.address
+            
         )
         
         self.order_item = OrderItem.objects.create(
             order=self.order,
             product=self.product,
             quantity=1,
-            price=Decimal('99.99')
+            unit_price=Decimal('99.99'),
+            subtotal=Decimal('99.99')
         )
         
         # Create test review
@@ -99,14 +100,14 @@ class ReviewsTestCase(APITestCase):
             user=self.user,
             status='delivered',
             total_amount=Decimal('99.99'),
-            shipping_address=self.address
+            
         )
         
         order_item2 = OrderItem.objects.create(
             order=order2,
             product=self.product,
             quantity=1,
-            price=Decimal('99.99')
+            unit_price=Decimal('99.99')
         )
         
         url = reverse('review-list')
@@ -259,7 +260,7 @@ class ReviewsTestCase(APITestCase):
             order=other_user_order,
             product=self.product,
             quantity=1,
-            price=Decimal('99.99')
+            unit_price=Decimal('99.99')
         )
         
         Review.objects.create(
@@ -312,14 +313,14 @@ class ReviewsTestCase(APITestCase):
             user=self.user,
             status='delivered',
             total_amount=Decimal('99.99'),
-            shipping_address=self.address
+            
         )
         
         order_item2 = OrderItem.objects.create(
             order=order2,
             product=self.product,
             quantity=1,
-            price=Decimal('99.99')
+            unit_price=Decimal('99.99')
         )
         
         url = reverse('review-list')
@@ -348,14 +349,14 @@ class ReviewsTestCase(APITestCase):
             user=self.user,
             status='delivered',
             total_amount=Decimal('99.99'),
-            shipping_address=self.address
+            
         )
         
         order_item2 = OrderItem.objects.create(
             order=order2,
             product=self.product,
             quantity=1,
-            price=Decimal('99.99')
+            unit_price=Decimal('99.99')
         )
         
         url = reverse('review-list')
@@ -384,14 +385,14 @@ class ReviewsTestCase(APITestCase):
             user=self.user,
             status='pending',
             total_amount=Decimal('99.99'),
-            shipping_address=self.address
+            
         )
         
         pending_order_item = OrderItem.objects.create(
             order=pending_order,
             product=self.product,
             quantity=1,
-            price=Decimal('99.99')
+            unit_price=Decimal('99.99')
         )
         
         url = reverse('review-list')

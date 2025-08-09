@@ -49,7 +49,7 @@ class AdminPermissionsTestCase(APITestCase):
             price=99.99,
             category=self.category,
             slug='test-product',
-            inventory=10
+            stock_quantity=10
         )
         
         # Get JWT tokens

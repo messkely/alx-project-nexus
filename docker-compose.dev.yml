@@ -1,0 +1,72 @@
+# ALX E-Commerce Backend - Development Docker Compose
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: ecommerce_dev
+      POSTGRES_USER: ecommerce_user
+      POSTGRES_PASSWORD: dev_password
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ecommerce_user -d ecommerce_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    restart: always
+    command: redis-server --maxmemory 128mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Django Web Application (Development)
+  web:
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=development-secret-key-not-for-production
+      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
+      - DB_ENGINE=django.db.backends.postgresql
+      - DB_NAME=ecommerce_dev
+      - DB_USER=ecommerce_user
+      - DB_PASSWORD=dev_password
+      - DB_HOST=db
+      - DB_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: >
+      sh -c "python manage.py migrate &&
+             python scripts/setup_dev.py &&
+             python manage.py runserver 0.0.0.0:8000"
+
+volumes:
+  postgres_dev_data:
+  static_volume:
+  media_volume:

@@ -14,7 +14,7 @@ class ReviewModelTest(TestCase):
             title="MacBook Pro",
             description="Apple laptop",
             price=1999.99,
-            inventory=10,
+            stock_quantity=10,
             category=self.category
         )
 
