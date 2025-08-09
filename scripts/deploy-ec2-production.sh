@@ -74,6 +74,12 @@ install_docker() {
     sudo systemctl start docker
     sudo systemctl enable docker
     
+    # Stop any conflicting services that might be using our ports
+    log_info "Stopping any conflicting services..."
+    sudo systemctl stop redis-server 2>/dev/null || true
+    sudo systemctl stop postgresql 2>/dev/null || true
+    sudo systemctl stop nginx 2>/dev/null || true
+    
     log_success "Docker installed successfully"
 }
 
@@ -140,6 +146,11 @@ start_services() {
     log_info "Starting production services..."
     
     cd $PROJECT_DIR
+    
+    # Clean up any existing containers
+    log_info "Cleaning up any existing containers..."
+    docker compose -f docker-compose.prod.yml down 2>/dev/null || true
+    docker system prune -f
     
     # Build images
     docker compose -f docker-compose.prod.yml build --no-cache
