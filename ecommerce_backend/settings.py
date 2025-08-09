@@ -9,7 +9,7 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-me-in-producti
 if DEBUG:
     ALLOWED_HOSTS = ['*']  # Only for development
 else:
-    allowed_hosts_str = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,testserver')
+    allowed_hosts_str = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,testserver,ecom-backend.store,98.87.47.179')
     ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_str.split(',') if host.strip()]
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
