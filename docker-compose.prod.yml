@@ -46,7 +46,7 @@ services:
     environment:
       - DEBUG=False
       - SECRET_KEY=EcommerceSecretKey2025!ProductionAWSEC2VerySecure
-      - ALLOWED_HOSTS=3.80.35.89,localhost,127.0.0.1,0.0.0.0,web,django
+      - ALLOWED_HOSTS=98.87.47.179,ecom-backend.store,localhost,127.0.0.1,0.0.0.0,web,django
       - DB_ENGINE=django.db.backends.postgresql
       - DB_NAME=ecommerce_db
       - DB_USER=ecommerce_user
@@ -87,6 +87,7 @@ services:
       - media_volume:/app/media:ro
       - ./ssl:/etc/nginx/ssl:ro
       - ./logs/nginx:/var/log/nginx
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - web
 
