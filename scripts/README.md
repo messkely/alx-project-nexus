@@ -7,6 +7,7 @@ This directory contains utility scripts for deployment, database management, and
 ### 🚀 Production Deployment
 - **`setup-domain-ssl.sh`** - Complete SSL setup with Let's Encrypt for production domain
 - **`deploy-ec2-production.sh`** - Production deployment script for EC2
+- **`update-production.sh`** - ⭐ Quick production update script (recommended)
 - **`start-ec2-production.sh`** - Start production services on EC2
 - **`verify-dns.sh`** - Verify DNS configuration for domain setup
 
@@ -34,6 +35,11 @@ sudo ./scripts/setup-domain-ssl.sh
 ### Deploy to EC2 Production
 ```bash
 ./scripts/deploy-ec2-production.sh
+```
+
+### Update Production (Quick & Easy) ⭐
+```bash
+./scripts/update-production.sh
 ```
 
 ### Seed Database
