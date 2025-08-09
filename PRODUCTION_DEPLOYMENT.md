@@ -6,7 +6,7 @@ This guide covers the complete production deployment of the ALX E-Commerce Backe
 
 **Current Production Environment:**
 - **Domain:** https://ecom-backend.store/
-- **Server:** AWS EC2 Ubuntu (3.80.35.89)
+- **Server:** AWS EC2 Ubuntu (98.87.47.179)
 - **SSL:** Let's Encrypt (Auto-renewal enabled)
 - **Containers:** Django, PostgreSQL, Redis, Nginx
 

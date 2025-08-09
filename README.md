@@ -60,7 +60,7 @@ A enterprise-grade, scalable, and secure backend system for an e-commerce platfo
 - ✅ **HTTP/2 Support** - Modern protocol for better performance
 
 ### ☁️ **AWS EC2 Production Deployment**
-- ✅ **EC2 Ubuntu Server** - Production server on AWS (3.80.35.89)
+- ✅ **EC2 Ubuntu Server** - Production server on AWS (98.87.47.179)
 - ✅ **Docker Production** - Multi-container production setup
 - ✅ **Nginx Reverse Proxy** - SSL termination and load balancing
 - ✅ **Let's Encrypt Integration** - Automated certificate management

@@ -5,7 +5,7 @@
 This guide shows you how to update your live ALX E-Commerce project on EC2 with zero or minimal downtime.
 
 **Current Production:** https://ecom-backend.store  
-**Server:** AWS EC2 Ubuntu (3.80.35.89)  
+**Server:** AWS EC2 Ubuntu (98.87.47.179)  
 
 ---
 
@@ -13,7 +13,7 @@ This guide shows you how to update your live ALX E-Commerce project on EC2 with 
 
 ### Step 1: SSH to Your EC2 Instance
 ```bash
-ssh -i ecom-backend.pem ubuntu@3.80.35.89
+ssh -i ecom-backend.pem ubuntu@98.87.47.179
 ```
 
 ### Step 2: Navigate to Project Directory
