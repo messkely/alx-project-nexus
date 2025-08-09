@@ -350,4 +350,3 @@ echo "🔧 Management Commands:"
 echo "• Check cert status: sudo certbot certificates"
 echo "• Renew manually: sudo certbot renew"
 echo "• Check services: docker compose -f docker-compose.https.yml ps"
-EOF
